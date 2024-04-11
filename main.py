@@ -1,31 +1,27 @@
-from flask import (Flask, g)
-from database.connection import db, Vector
-from database.functions import (getAllDbVectors)
-from lang_chain.lang_chain import LangChainResponse
-from os import path
+from flask import (Flask, g, redirect, render_template, request)
+from flask_cors import CORS
+from actions.long_text import addLongTextToVectorDb
+from actions.response import getResponseFromAi
 from dotenv import load_dotenv
-from chroma.chroma import get_all_db_vectors
+
+
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
-# Connect to the database
-db.connect()
 load_dotenv()
-
-
 
 @app.route("/")
 def main():
-    return "<p>Hello, World!</p>"
+    return render_template('long-text.html')
 
-@app.route("/chroma")
-def chroma_api():  
-    return get_all_db_vectors()   
+@app.route("/api/long-text/add", methods=['POST'])
+def api_long_text_add():
+    text = request.form['text']
+    addLongTextToVectorDb(text)
+    return redirect('/')
 
-@app.route("/api/<jsdata>")
-def api_route(jsdata):
-    db.create_tables([Vector])
-    return LangChainResponse(jsdata)
-
-@app.route("/api/db")
-def api_route_all():
-    return  getAllDbVectors("vector", db)
+@app.route("/api/response/get/<text>", methods=['GET'])
+def api_response_get(text: str):
+    return getResponseFromAi(text)
+    
