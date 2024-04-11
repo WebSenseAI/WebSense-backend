@@ -3,14 +3,9 @@ from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
     ChatPromptTemplate
 )
-from lang_chain.VectorEmbedding import (
-    EmbbedShortText,
-    GetSimilarVectorsFromDatabase,        
-)
-
+from chroma.chroma import getSimilarVector
 import os
 
-# The template prompt that will be used to generate the prompt
 PROMPT = """
     You are and AI chatbot assistant of a website you have help users with their questions about the site. 
     You are given a context from the website and a user input. You need to provide a helpful answer to the user input based on the context.
@@ -25,15 +20,8 @@ PROMPT = """
 
 
 def LangChainResponse(question: str): 
-    llm = ChatOpenAI(openai_api_key="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")
-    
-    similarContextSum = GetSimilarVectorsFromDatabase(
-        {
-            "text": question,
-            "textEmbedded": EmbbedShortText(question)["textEmbedded"]
-        }
-    )
-        
+    llm = ChatOpenAI(openai_api_key=os.environ.get('OPENAI_API_KEY'))
+    similarContextSum = getSimilarVector(question)[0]
     message = HumanMessagePromptTemplate.from_template(template=PROMPT)
     chat_propmt = ChatPromptTemplate.from_messages(
         messages=[message]
