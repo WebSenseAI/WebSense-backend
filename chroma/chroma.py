@@ -1,17 +1,16 @@
-from chroma.config import collection
-from langchain_text_splitters import CharacterTextSplitter
+from chroma.config import create_collection
 import uuid
 
-def addTextToVectorDb(textToEmbbed: str):
-    collection.add(
+def addTextToVectorDb(textToEmbbed: str, id: str):
+    create_collection(id).add(
         documents = textToEmbbed,
         ids=[str(uuid.uuid4()) for _ in range(len(textToEmbbed))],
     )
     return "done"
     
 
-def getSimilarVector(question: str):
-    results = collection.query(
+def getSimilarVector(question: str, id: str):
+    results = create_collection(id).query(
         query_texts=[question],
         n_results=4
     )
