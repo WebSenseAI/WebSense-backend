@@ -19,9 +19,9 @@ PROMPT = """
     Helpful Answer: """
 
 
-def LangChainResponse(question: str): 
+def LangChainResponse(question: str, id: str): 
     llm = ChatOpenAI(openai_api_key=os.environ.get('OPENAI_API_KEY'))
-    similarContextSum = getSimilarVector(question)[0]
+    similarContextSum = getSimilarVector(question, id)[0]
     message = HumanMessagePromptTemplate.from_template(template=PROMPT)
     chat_propmt = ChatPromptTemplate.from_messages(
         messages=[message]
