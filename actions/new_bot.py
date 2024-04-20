@@ -14,7 +14,9 @@ def addNewBot(name: str, website: str, description: str, message: str, key: str)
         (name text, website text, description text, message text, key text, id text)
     ''')
     
-    id = str(uuid.uuid4())
+    #id = str(uuid.uuid4())
+    id = 'luisbeqja_collection'
+    
 
     # Insert a row of data
     c.execute("INSERT INTO bot_info VALUES (?, ?, ?, ?, ?, ?)",
