@@ -1,5 +1,6 @@
 from flask import (Flask, g, redirect, render_template, request)
 from flask_cors import CORS
+from actions.bot_info import getBotById
 from actions.long_text import addLongTextToVectorDb
 from actions.new_bot import addNewBot
 from actions.response import getResponseFromAi
@@ -36,9 +37,16 @@ def api_response_get(id: str):
 
 @app.route("/api/new/bot", methods=['POST'])
 def api_new_bot():
-    name = request.form['name']
-    description = request.form['description']
-    message = request.form['message']
-    key = request.form['key']    
-    return addNewBot(name, description, message, key)
+    name = request.json['name']
+    website = request.json['website']
+    description = request.json['description']
+    message = request.json['message']
+    key = request.json['key']    
+    return addNewBot(name, website, description, message, key)
+
+@app.route("/api/info/bot/<id>", methods=['GET'])
+def api_get_bot(id: str): 
+    return getBotById(id)
     
+    
+""" 1d4c9e61-ab90-4d15-afe5-0d56e786be74 """
