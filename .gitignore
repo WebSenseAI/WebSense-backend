@@ -9,3 +9,5 @@ docs/_build/
 dist/
 .venv/
 .DS_Store
+*test*
+data/
