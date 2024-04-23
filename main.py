@@ -12,6 +12,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
+app.config["SESSION_TYPE"] = "filesystem"
 app.secret_key = '123456789'
 
 oauth = OAuth(app)
