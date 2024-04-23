@@ -32,9 +32,9 @@ def authorize(oauth):
     save_user_info(user_info)
     session['user_info'] = user_info
     if user_info is not None:
-        return redirect('http://localhost:5173/setup')
+        return redirect('https://websenseai.netlify.app/setup')
     else:
-        return redirect('http://localhost:5173/login')
+        return redirect('https://websenseai.netlify.app/login')
 
 def save_user_info(user_info):
     conn = sqlite3.connect('./db_config/config_database.db')
