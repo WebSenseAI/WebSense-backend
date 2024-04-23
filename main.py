@@ -1,15 +1,20 @@
-from flask import (Flask, g, redirect, render_template, request)
+from flask import (Flask, g, jsonify, redirect, render_template, request, session)
 from flask_cors import CORS
 from actions.bot_info import getBotById
 from actions.long_text import addLongTextToVectorDb
 from actions.new_bot import addNewBot
 from actions.response import getResponseFromAi
 from dotenv import load_dotenv
-
+from auth.auth import login, authorize
+from authlib.integrations.flask_client import OAuth
+from flask_cors import CORS
 
 app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
+
+app.secret_key = '123456789'
+
+oauth = OAuth(app)
 
 load_dotenv()
 
@@ -42,11 +47,25 @@ def api_new_bot():
     description = request.json['description']
     message = request.json['message']
     key = request.json['key']    
-    return addNewBot(name, website, description, message, key)
+    return addNewBot(name, website, description, message, key, 'luisbeqja_collection')
 
 @app.route("/api/info/bot/<id>", methods=['GET'])
 def api_get_bot(id: str): 
     return getBotById(id)
     
     
-""" 1d4c9e61-ab90-4d15-afe5-0d56e786be74 """
+# OAuth routes
+@app.route("/login")
+def login_oauth():
+    return login(oauth)
+
+@app.route("/authorize")
+def login_authorize():
+    return authorize(oauth)
+
+@app.route("/userinfo")
+def get_user_info():
+    if 'user_info' in session:
+        return jsonify(dict(session['user_info']))
+    else:
+        return "No user info in session", 400

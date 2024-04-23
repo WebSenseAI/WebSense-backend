@@ -9,3 +9,4 @@ docs/_build/
 dist/
 .venv/
 .DS_Store
+google_login_info.json
