@@ -10,10 +10,16 @@ from authlib.integrations.flask_client import OAuth
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "https://websenseai.netlify.app"}}, supports_credentials=True)
+
+
 
 app.config["SESSION_TYPE"] = "filesystem"
 app.secret_key = '123456789'
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE='None',
+)
 
 oauth = OAuth(app)
 
