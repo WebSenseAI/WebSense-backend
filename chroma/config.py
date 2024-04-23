@@ -2,7 +2,6 @@ import os
 import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
 
-"luisbeqja_collection"
 
 def create_collection(name: str):
     openai_ef = embedding_functions.OpenAIEmbeddingFunction(

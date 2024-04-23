@@ -60,7 +60,7 @@ def save_user_info(user_info):
                     user_info['name'], 
                     user_info['picture'], 
                     user_info['verified_email'], 
-                    "luisbeqja_collection"
+                    ""
                     )
         )
     else:
