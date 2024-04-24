@@ -1,6 +1,6 @@
 from flask import (Flask, g, jsonify, redirect, render_template, request, session)
 from flask_cors import CORS
-from actions.bot_info import getBotById
+from actions.bot_info import getBotById, getUserIdBot
 from actions.long_text import addLongTextToVectorDb
 from actions.new_bot import addNewBot
 from actions.response import getResponseFromAi
@@ -10,9 +10,16 @@ from authlib.integrations.flask_client import OAuth
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "https://websenseai.netlify.app"}}, supports_credentials=True)
 
+
+
+app.config["SESSION_TYPE"] = "filesystem"
 app.secret_key = '123456789'
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE='None',
+)
 
 oauth = OAuth(app)
 
@@ -46,8 +53,9 @@ def api_new_bot():
     website = request.json['website']
     description = request.json['description']
     message = request.json['message']
-    key = request.json['key']    
-    return addNewBot(name, website, description, message, key, 'luisbeqja_collection')
+    key = request.json['key']
+    user_id = request.json['user_id']
+    return addNewBot(name, website, description, message, key, user_id)
 
 @app.route("/api/info/bot/<id>", methods=['GET'])
 def api_get_bot(id: str): 
@@ -69,3 +77,12 @@ def get_user_info():
         return jsonify(dict(session['user_info']))
     else:
         return "No user info in session", 400
+    
+@app.route("/api/user/bot/<id>", methods=['GET'])
+def get_user_bot(id: str):
+    bot_id = getUserIdBot(id)
+    if bot_id['bot_id'] == None:
+        return {
+            'bot_id': None
+        }
+    return getBotById(bot_id['bot_id'])
