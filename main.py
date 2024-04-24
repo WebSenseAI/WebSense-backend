@@ -8,10 +8,18 @@ from dotenv import load_dotenv
 from auth.auth import login, authorize
 from authlib.integrations.flask_client import OAuth
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://websenseai.netlify.app"}}, supports_credentials=True)
-
+if os.environ.get('FLASK_ENV') == 'development':
+    print("DEVELOPMENT SERVER")
+    CORS(app,
+         resources={r"/*": {"origins": "http://localhost:5173"}},
+         supports_credentials=True)
+else:
+    CORS(app,
+         resources={r"/*": {"origins": "https://websenseai.netlify.app"}},
+         supports_credentials=True)
 
 
 app.config["SESSION_TYPE"] = "filesystem"

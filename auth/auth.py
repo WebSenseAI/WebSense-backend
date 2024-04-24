@@ -31,10 +31,18 @@ def authorize(oauth):
     user_info = resp.json()
     save_user_info(user_info)
     session['user_info'] = user_info
+
+    setup_redirect = 'https://websenseai.netlify.app/setup'
+    login_redirect = 'https://websenseai.netlify.app/login'
+    if os.environ.get('FLASK_ENV') == 'development':
+        setup_redirect = 'http://localhost:5173/setup'
+        login_redirect = 'http://localhost:5173/login'
+        
+
     if user_info is not None:
-        return redirect('https://websenseai.netlify.app/setup')
+        return redirect(setup_redirect)
     else:
-        return redirect('https://websenseai.netlify.app/login')
+        return redirect(login_redirect)
 
 def save_user_info(user_info):
     conn = sqlite3.connect('./db_config/config_database.db')
