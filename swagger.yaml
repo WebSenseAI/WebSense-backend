@@ -1,0 +1,202 @@
+openapi: 3.0.3
+info:
+  title: Swagger WebSense AI
+  description: |-
+    Here you can find all the api call for WebSenseAI
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+  
+tags:
+  - name: Bot
+    description: All the cals for the bots
+  - name: User
+    description: All the cals for the Users
+paths:
+  /api/long-text/add:
+    post:
+      tags:
+        - Bot
+      summary: Add text to Chroma DB for a specific bot ID 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddText'
+        required: true
+      responses:
+        '200':
+          description: Successful operation - redirect to /
+        '400':
+          description: Invalid ID supplied
+  /api/new/bot:
+    post:
+      tags:
+        - Bot
+      summary: Create a new bot for a specific user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bot'
+        required: true
+      responses:
+        '200':
+          description: successful operation - Bot added successfully
+         
+        '400':
+          description: Invalid status value
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+  /api/response/get/{id}:
+    post:
+      tags:
+        - Bot
+      summary: Get a respons from a question in the context of the ID
+      parameters:
+        - name: id
+          in: path
+          description: ID of bot
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+        required: true
+      responses:
+        '200':
+          description: successful operation - String of the response
+        '400':
+          description: Invalid status value
+  /api/info/bot/{id}:
+    get:
+      tags:
+        - Bot
+      summary: Get all the configuratoin info of the bot
+      parameters:
+        - name: id
+          in: path
+          description: ID of bot
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bot'
+          description: successful operation
+        '400':
+          description: Invalid status value
+  /login:
+    post:
+      tags:
+        - User
+      summary: Login with google
+      responses:
+        '200':
+          description: successful Logged in
+        '400':
+          description: Invalid status value
+  /userinfo:
+    get:
+      tags:
+        - User
+      summary: Login with google
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: successful Logged in
+        '400':
+          description: Invalid status value
+
+
+components:
+  schemas:
+    AddText:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "102312435345434656"
+        text:
+          type: string
+          example: "Example of text to add in the DB"
+    Bot:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'WebSense AI'
+        website:
+          type: string
+          example: 'www.example.com'
+        description:
+          type: string
+          example: 'Example of a description that the user can provide on the config'
+        message:
+          type: string
+          example: "👋 Welcome! I'm here to help you with any questions you have. Just ask away!"
+        key: 
+          type: string 
+          example: 'OpenApi key'
+        user_id:
+          type : string
+          example: 'The id of the user after logged in'
+    Question:
+      type: object
+      properties:
+        question:
+          type: string
+          example: "Example of a question"
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          example: "email@gmail.com"
+        family_name:
+          type: string
+          example: 'luis'
+        given_name: 
+          type: string
+          example: 'beqja'
+        id:
+          type: string
+          example: 'aiosabuia2123312u3iu14b1'
+        locale:
+          type: string
+          example: 'it'
+        name:
+          type: string
+          example: 'luis beqja'
+        picture:
+          type: string
+          example: 'https://lh3.googleusercontent.com/ACg8ocLvhpG5sDuTjYncXbuBA6mSTFahgmHzty6daG8eHvQM2btLnw=s96-c'
+        verified_email:
+          type: boolean
+          example: true
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
+      
