@@ -5,36 +5,36 @@ import xmltodict
 import xml
 
 
-
 def expand_sitemap_index(index_path):
-        """
-        Given a path of a sitemap INDEX, extracts the actual SITEMAPS.
-        if the INDEX contains other INDEX, then recursively extracts them too.
+    """
+    Given a path of a sitemap INDEX, extracts the actual SITEMAPS.
+    if the INDEX contains other INDEX, then recursively extracts them too.
 
-        Parameters
-        ----------
-        path : str
-            The path of the INDEX
+    Parameters
+    ----------
+    path : str
+        The path of the INDEX
 
-        Returns
-        -------
-        list
-            List of non-INDEX sitemaps.
-        """
-        sitemap_content = get_and_turn_xml_to_dict(index_path)
-        if sitemap_content is None:
-            return []
-        sm_dicts = sitemap_content['sitemapindex']['sitemap']
-        sm_values = [sm['loc'] for sm in sm_dicts]
-        expansion = []
-        for sitemap in sm_values:
-            if get_sitemap_type(sitemap) == 'INDEX':
-                print(f'expanding {sitemap}')
-                expansion += expand_sitemap_index(sitemap)
-            else:
-                print(f'added {sitemap}')
-                expansion += [sitemap]
-        return expansion
+    Returns
+    -------
+    list
+        List of non-INDEX sitemaps.
+    """
+    sitemap_content = get_and_turn_xml_to_dict(index_path)
+    if sitemap_content is None:
+        return []
+    sm_dicts = sitemap_content['sitemapindex']['sitemap']
+    sm_values = [sm['loc'] for sm in sm_dicts]
+    expansion = []
+    for sitemap in sm_values:
+        if get_sitemap_type(sitemap) == 'INDEX':
+            print(f'expanding {sitemap}')
+            expansion += expand_sitemap_index(sitemap)
+        else:
+            print(f'added {sitemap}')
+            expansion += [sitemap]
+    return expansion
+
 
 def get_and_turn_xml_to_dict(path):
     """
@@ -57,7 +57,7 @@ def get_and_turn_xml_to_dict(path):
     except xml.parsers.expat.ExpatError:
         print(f"ERROR OCCURED TRYING TO PARSE {path}")
         return None
-        
+
 
 def mine_pages_form_sitemap(sitemap_paths):
     """
@@ -74,6 +74,7 @@ def mine_pages_form_sitemap(sitemap_paths):
         else:
             sites_reached += [pages['loc']]
     return sites_reached
+
 
 def get_sitemap_type(path, expensive=True):
     """
@@ -99,7 +100,7 @@ def get_sitemap_type(path, expensive=True):
             return "INDEX"
         else:
             return "SITEMAP"
-    
+
 
 def fetch_all_sitemap_paths(robots_results):
     """
@@ -116,21 +117,20 @@ def fetch_all_sitemap_paths(robots_results):
     all_paths : list[str]
         List of all the non-INDEX sitemaps.
     """
-    
-    
+
     all_paths = []
     for path in robots_results:
-        path_type = get_sitemap_type(path) 
+        path_type = get_sitemap_type(path)
         print(path, path_type)
         if path_type == 'INDEX':
             all_paths += expand_sitemap_index(path)
-        elif  path_type == 'SITEMAP':
+        elif path_type == 'SITEMAP':
             all_paths += [path]
         else:
             continue
-    
+
     return all_paths
-    
+
 
 def get_robots_results(base_url):
     """
