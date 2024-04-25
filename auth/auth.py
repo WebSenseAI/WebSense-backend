@@ -31,7 +31,7 @@ def authorize(oauth):
     user_info = resp.json()
     save_user_info(user_info)
     session['user_info'] = user_info
-
+    
     setup_redirect = 'https://websenseai.netlify.app/setup'
     login_redirect = 'https://websenseai.netlify.app/login'
     if os.environ.get('FLASK_ENV') == 'development':
