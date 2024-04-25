@@ -157,6 +157,7 @@ soupsieve==2.5
 SQLAlchemy==2.0.29
 stack-data==0.6.3
 starlette==0.37.2
+swagger-ui-py==23.9.23
 sympy==1.12
 tenacity==8.2.3
 tiktoken==0.6.0

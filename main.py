@@ -55,7 +55,7 @@ def api_long_text_add():
     addLongTextToVectorDb(text, id)
     return redirect('/')
 
-@app.route("/api/response/get/<id>", methods=['POST'])
+@app.route("/api/response/get/<id>", methods=['GET'])
 def api_response_get(id: str):
     question = request.args.get('question')
     return getResponseFromAi(question, id)
