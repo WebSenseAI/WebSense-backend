@@ -24,6 +24,7 @@ charset-normalizer==3.3.2
 chroma-hnswlib==0.7.3
 chromadb==0.4.24
 click==8.1.7
+colorama==0.4.6
 coloredlogs==15.0.1
 cryptography==42.0.5
 dataclasses-json==0.6.4
@@ -131,6 +132,7 @@ pydantic_core==2.16.3
 Pygments==2.17.2
 PyPika==0.48.9
 pyproject_hooks==1.0.0
+pyreadline3==3.4.1
 PySocks==1.7.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
@@ -154,6 +156,7 @@ soupsieve==2.5
 SQLAlchemy==2.0.29
 stack-data==0.6.3
 starlette==0.37.2
+swagger-ui-py==23.9.23
 sympy==1.12
 tenacity==8.2.3
 tiktoken==0.6.0
