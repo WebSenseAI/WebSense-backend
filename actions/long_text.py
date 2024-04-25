@@ -15,4 +15,4 @@ def addMultipleLongTextToVectorDb(texts: list[str], id: str):
     # divide each text into chunks and then flatten
     splittedTexts = splittedMultipleTextsInChunk(texts)
     # for each chunk embed it and add it into db
-    addTextToVectorDb(splittedTextInChunk, id)
+    addTextToVectorDb(splittedTexts, id)
