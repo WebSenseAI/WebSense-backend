@@ -1,5 +1,7 @@
 import sqlite3
 import uuid
+from webscrapping.scrapWrapper import trainNewBot
+from actions.long_text import addMultipleLongTextToVectorDb
 
 def addNewBot(name: str, website: str, description: str, message: str, key: str, user_id: str):
     # Connect to the SQLite database (or create it if it doesn't exist)
@@ -28,4 +30,10 @@ def addNewBot(name: str, website: str, description: str, message: str, key: str,
     # Commit the changes and close the connection
     conn.commit()
     conn.close()
+
+    # START TRAINING
+
+    pages = trainNewBot(website)
+    addMultipleLongTextToVectorDb(pages, id)
+
     return 'Bot added successfully'
