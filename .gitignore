@@ -12,3 +12,5 @@ dist/
 google_login_info.json
 *test*
 data/
+!test_api.py
+!test.py 
