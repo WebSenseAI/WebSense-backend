@@ -16,6 +16,8 @@ def process_html(raw_html: str,
         Focuses only on the content of `<body>` tag (Default: True)
     """
 
+    print('Processing HTML')
+    
     soup = BeautifulSoup(raw_html, 'html.parser')
 
     if remove_scripts_and_style:
@@ -25,7 +27,12 @@ def process_html(raw_html: str,
     target = soup
     
     if focus_body:
-        target = soup.find('body')
+        body = soup.find('body')
+        if body is not None:
+            target = body
+        else:
+            print('No <body> tag found. Processing the whole HTML')
+            return None
 
     return target.text
 
@@ -39,6 +46,9 @@ def fix_whitespaces(html):
     html : str
         The text that will be fixed
     """
+    if html is None:
+        print("No HTML to process")
+        return None
     # Convert all new lines into spaces
     cleaned = html.replace('\n', ' ')
     # Reduce consecutive whitepsaces to a single one

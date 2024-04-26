@@ -1,6 +1,6 @@
 import sqlite3
 import uuid
-from webscrapping.scrapWrapper import trainNewBot
+from webscraping.scrapWrapper import trainNewBot
 from actions.long_text import addMultipleLongTextToVectorDb
 
 def addNewBot(name: str, website: str, description: str, message: str, key: str, user_id: str):

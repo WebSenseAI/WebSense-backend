@@ -15,6 +15,21 @@ def splittedTextInChunk(textToEmbbed: str):
     print(len(chunks))
     return chunks
 
-def splittedMultipleTextsInChunk(textsToEmbbed: list[str]):
-    chunks = [splittedTextInChunk(t) for t in textsToEmbbed]
-    return [item for sublist in chunks for item in sublist]
+def splittedMultipleTextsInChunk(textsToEmbbed: list[str]) -> list[str]:
+    """
+    Splits multiple texts into chunks
+
+    Parameters
+    ----------
+    textsToEmbbed : list[str]
+        The texts that will be splitted
+
+    Returns
+    -------
+    list[str]
+        The list of chunks
+    """
+    chunks = [splittedTextInChunk(t) for t in textsToEmbbed if t is not None]
+    # flatten the list of lists
+    chunks = [item for sublist in chunks for item in sublist]
+    return chunks

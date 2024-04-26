@@ -57,9 +57,12 @@ def trainNewBot(url: str, save: bool = False):
 
         os.mkdir(storage_path)
         for index, page in enumerate(extracted_data,1):
-            f_name = f"page_{index}.txt"
-            with open(os.path.join(storage_path,f_name), 'w', encoding="utf-8") as f:
-                f.write(page)
+            if page is not None:
+                f_name = f"page_{index}.txt"
+                with open(os.path.join(storage_path,f_name), 'w', encoding="utf-8") as f:
+                    f.write(page)
+            else:
+                print(f"No data to write for page {index}")
     
     return extracted_data
         

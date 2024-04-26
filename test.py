@@ -1,6 +1,6 @@
 import sys, os
 cwd = os.getcwd()
-sys.path.append(os.path.join(cwd, 'webscrapping'))
+sys.path.append(os.path.join(cwd, 'webscraping'))
 from webscraping.scrapWrapper import trainNewBot
 
 DOMAIN_LUIS = 'luisbeqja.com'
