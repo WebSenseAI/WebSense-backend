@@ -6,12 +6,40 @@
     <title>Document</title>
   </head>
   <body>
-    <form action="/api/new/bot" method="post">
+    <form action="/api/new/bot" method="post" id='frmNewBot'>
         <input type="text" name="name" placeholder="name site" />
+        <input type="text" name="website" placeholder="website" />
         <input type="text" name="description" placeholder="description" />
         <input type="text" name="message" placeholder="first message" />
         <input type="text" name="key" placeholder="OpenAI Key"/>
+        <input type="text" name="user_id" placeholder="user id"/>
       <input type="submit" value="Submit" />
     </form>
   </body>
+  <script>
+    document.getElementById('frmNewBot').addEventListener('submit', function(event) {
+        event.preventDefault();  // Prevent the default form submission
+    
+        const formData = new FormData(this);
+        const jsonData = {};
+    
+        // Convert form data to JSON
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
+    
+        // Create and send an AJAX request
+        fetch('/api/new/bot', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',  // Set the content type to JSON
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.json())
+        .then(data => console.log('Success:', data))
+        .catch(error => console.error('Error:', error));
+    });
+    </script>
+    
 </html>

@@ -10,3 +10,7 @@ dist/
 .venv/
 .DS_Store
 google_login_info.json
+*test*
+data/
+!test_api.py
+!test.py 
