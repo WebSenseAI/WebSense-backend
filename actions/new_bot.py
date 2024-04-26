@@ -2,6 +2,7 @@ import sqlite3
 import uuid
 from webscraping.scrapWrapper import trainNewBot
 from actions.long_text import addMultipleLongTextToVectorDb
+from client_communication.email.websense_email_sender import send_new_bot_email
 
 def addNewBot(name: str, website: str, description: str, message: str, key: str, user_id: str):
     # Connect to the SQLite database (or create it if it doesn't exist)
@@ -29,11 +30,22 @@ def addNewBot(name: str, website: str, description: str, message: str, key: str,
 
     # Commit the changes and close the connection
     conn.commit()
+
+    c.execute("SELECT email, name from users_info WHERE id = ?",(user_id,))
+    user_info = c.fetchall()[0]
     conn.close()
+    
+
 
     # START TRAINING
-
     pages = trainNewBot(website)
     addMultipleLongTextToVectorDb(pages, id)
+    
+    # Send bot ready email
+
+    send_new_bot_email(username=user_info[1],
+                       receiver=user_info[0],
+                       link='#')
+
 
     return 'Bot added successfully'
