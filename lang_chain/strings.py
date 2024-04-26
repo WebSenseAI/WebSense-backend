@@ -1,5 +1,6 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import numpy as np
+from typing import List
 
 def returnConentMap(n):
         return n.page_content
@@ -15,7 +16,7 @@ def splittedTextInChunk(textToEmbbed: str):
     print(len(chunks))
     return chunks
 
-def splittedMultipleTextsInChunk(textsToEmbbed: list[str]) -> list[str]:
+def splittedMultipleTextsInChunk(textsToEmbbed: List[str]) -> List[str]:
     """
     Splits multiple texts into chunks
 
