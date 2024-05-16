@@ -1,6 +1,6 @@
 from chroma.chroma import addTextToVectorDb
 from lang_chain.strings import splittedTextInChunk, splittedMultipleTextsInChunk
-
+from typing import List
 
 def addLongTextToVectorDb(text: str, id: str):
     # divide the text into chunks
@@ -11,7 +11,7 @@ def addLongTextToVectorDb(text: str, id: str):
     
     return "Text added to the DB"
 
-def addMultipleLongTextToVectorDb(texts: list[str], id: str):
+def addMultipleLongTextToVectorDb(texts: List[str], id: str):
     # divide each text into chunks and then flatten
     splittedTexts = splittedMultipleTextsInChunk(texts)
     # for each chunk embed it and add it into db
