@@ -14,3 +14,5 @@ google_login_info.json
 data/
 !test_api.py
 !test.py 
+db_chroma/*
+db_config/*
