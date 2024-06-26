@@ -20,7 +20,7 @@ if os.environ.get('FLASK_ENV') == 'development':
          supports_credentials=True)
 else:
     CORS(app,
-         resources={r"/*": {"origins": "https://websenseai.netlify.app"}},
+         resources={r"/*": {"origins": ["https://websenseai.netlify.app", "https://www.ostarcello.it"]}},
          supports_credentials=True)
 
 
