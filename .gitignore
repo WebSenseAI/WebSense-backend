@@ -1,16 +1,2 @@
-.idea/
-.vscode/
-__pycache__/
-.tox/
-.coverage
-.coverage.*
-htmlcov/
-docs/_build/
-dist/
-.venv/
-.DS_Store
-google_login_info.json
+__pycache__
 *test*
-data/
-!test_api.py
-!test.py 
