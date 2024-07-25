@@ -5,7 +5,7 @@ class InternalErrorCode(Enum):
     InvalidProvider = (1001, "Invalid Provider",
                        "Unsupported oauth provider selected.")
     BotNotExist = (1002, "No bot exist",
-                   "User does not have any bot")
+                   "Bot with given information does not exist")
 
     def __init__(self, code: int, description: str, message: str):
         self._code = code

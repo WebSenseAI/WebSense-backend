@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.constants.http_status_codes import SUCCESS_CODE,ALREADY_REPORTED_CODE
 from app.services.supabase_client_utils import get_logged_in_user_info, get_logged_in_user_id
-from app.services.database.bots_db import create_new_bot, get_user_bot, remove_user_bot
+from app.services.database.bots_db import create_new_bot, get_user_bot, get_bot_by_id, remove_user_bot
 from app.errors.http_error_templates import create_unauthorized_error, create_returnable_internal_error_template, create_returnable_error_template
 from app.constants.internal_errors import InternalErrorCode
 
@@ -32,7 +32,7 @@ def create_bot():
 
 
 @users_bp.route('/bot/info', methods=['GET'])
-def get_bot_info():
+def get_bot_info_by_user():
     userid = get_logged_in_user_id()
     if not userid:
         return create_unauthorized_error()
@@ -44,7 +44,19 @@ def get_bot_info():
     return jsonify(bot_info[0]), SUCCESS_CODE
 
 
-@users_bp.route('/bot/remove', methods=['GET','DELETE'])
+@users_bp.route('/bot/info/<botid>', methods=['GET'])
+def get_bot_info_by_id(botid):
+    
+    bot_info = get_bot_by_id(botid)
+    if not bot_info:
+        return create_returnable_internal_error_template(InternalErrorCode.BotNotExist)
+    return jsonify(bot_info[0]), SUCCESS_CODE
+
+@users_bp.route('/bot/update', methods=['PUT'])
+def update_bot():
+    return jsonify(request.json), SUCCESS_CODE
+
+@users_bp.route('/bot/remove', methods=['DELETE'])
 def remove_bot():
     userid = get_logged_in_user_id()
     if not userid:
