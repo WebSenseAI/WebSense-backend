@@ -13,7 +13,6 @@ auth_bp = Blueprint('auth_bp', __name__)
 def callback_post_google():
     code = request.args.get("code")
     sb_session, user = exchange_with_session(code)
-    print(user)
     create_internal_user_with_supabase_code(user)
     session['supabase_access_token'] = sb_session.access_token
     session['supabase_refresh_token'] = sb_session.refresh_token
@@ -36,7 +35,7 @@ def continue_with_provider(provider: str):
     return redirect(oauth_url)
 
 
-@auth_bp.route('/logout')
+@auth_bp.route('/logout', methods=['GET'])
 def logout():
     supabase_session_end()
     return {}, SUCCESS_CODE

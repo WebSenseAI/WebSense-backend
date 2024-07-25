@@ -8,3 +8,8 @@ def create_new_bot(name, website_url, description, first_message, openai_key,own
                                               "first_message": first_message,
                                               "openai_key": openai_key}).execute()
     print(response)
+
+
+def get_user_bot(userid):
+    response = supabase.from_('bots').select('*').eq('owned_by',userid).execute()
+    return response.data

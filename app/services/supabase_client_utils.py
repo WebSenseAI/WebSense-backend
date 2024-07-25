@@ -20,6 +20,10 @@ def get_logged_in_user_info():
     else:
         return session.user
 
+def get_logged_in_user_id():
+    user = get_logged_in_user_info()
+    return user.id if user else None
+
 def get_session():
     return supabase.auth.get_session()
 

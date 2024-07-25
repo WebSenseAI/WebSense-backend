@@ -4,6 +4,8 @@ from enum import Enum
 class InternalErrorCode(Enum):
     InvalidProvider = (1001, "Invalid Provider",
                        "Unsupported oauth provider selected.")
+    BotNotExist = (1002, "No bot exist",
+                   "User does not have any bot")
 
     def __init__(self, code: int, description: str, message: str):
         self._code = code
