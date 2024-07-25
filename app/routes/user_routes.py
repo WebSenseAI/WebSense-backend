@@ -41,4 +41,4 @@ def get_bot_info():
     if not bot_info:
         return jsonify(create_internal_error_template(InternalErrorCode.BotNotExist)), BAD_REQUEST_CODE
     
-    return jsonify(bot_info), SUCCESS_CODE
+    return jsonify(bot_info[0]), SUCCESS_CODE
