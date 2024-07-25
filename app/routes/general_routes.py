@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, redirect
 from app.constants.http_status_codes  import SUCCESS_CODE, UNAUTHORIZED_CODE
-from app.errors.http_error_templates import create_error_template
+from app.errors.http_error_templates import create_unauthorized_error
 from app.services.session_manager import get_supabase_session, get_tokens
 
 
@@ -22,11 +22,10 @@ def welcome():
                                 access_token=tokens['access_token'],
                                 refresh_token=tokens['refresh_token'])
     else:
-        return jsonify(create_error_template(UNAUTHORIZED_CODE,
-                "Unauthorized", "The user is not authorized")), UNAUTHORIZED_CODE
+        return create_unauthorized_error()
 
 
 @general_bp.route('/check_session')
 def check_session():
     session = get_supabase_session()
-    return jsonify(session.model_dump())
+    return jsonify(session.model_dump()), SUCCESS_CODE

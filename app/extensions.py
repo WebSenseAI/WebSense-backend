@@ -4,6 +4,8 @@ from supabase import create_client
 from supabase.client import Client, ClientOptions
 import os
 import vecs
+from flask_socketio import SocketIO
+
 
 def create_supabase_client():
     url = os.environ.get('SUPABASE_URL')
@@ -17,6 +19,7 @@ supabase: Client = create_supabase_client()
 
 vx = vecs.create_client(os.environ.get('SUPABASE_DB_STRING'))
 
+socketio = SocketIO()
 
 
 def init_extensions(app):
@@ -24,3 +27,4 @@ def init_extensions(app):
                   resources=app.config['CORS_RESOURCES'],
                   supports_credentials=app.config['CORS_SUPPORTS_CREDENTIALS'])
     api_doc(app, config_path='../swagger.yaml')
+    socketio.init_app(app, cors_allowed_origins="*")     

@@ -13,3 +13,9 @@ def create_new_bot(name, website_url, description, first_message, openai_key,own
 def get_user_bot(userid):
     response = supabase.from_('bots').select('*').eq('owned_by',userid).execute()
     return response.data
+
+
+def remove_user_bot(userid):
+    response = supabase.table('bots').delete().eq('owned_by', userid).execute()
+    print(response)
+    return response.count

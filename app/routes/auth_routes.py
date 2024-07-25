@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, redirect, current_app, session
 from app.constants.http_status_codes import SUCCESS_CODE, BAD_REQUEST_CODE
-from app.errors.http_error_templates import create_internal_error_template
+from app.errors.http_error_templates import create_returnable_internal_error_template
 from app.services.supabase_client_utils import get_oauth_provider_url, exchange_with_session, supabase_session_end
 from app.services.database.users_db import create_internal_user_with_supabase_code
 from app.extensions import supabase
@@ -23,8 +23,7 @@ def callback_post_google():
 def continue_with_provider(provider: str):
     available_providers = os.environ.get("SUPPORTED_PROVIDERS").split(',')
     if provider not in available_providers:
-        error = create_internal_error_template(InternalErrorCode.InvalidProvider)
-        return jsonify(error), BAD_REQUEST_CODE
+        return create_returnable_internal_error_template(InternalErrorCode.InvalidProvider)
 
     base_url = current_app.config['BASE_URL']
     redirect_url = f"{base_url}/auth/oauth/callback"

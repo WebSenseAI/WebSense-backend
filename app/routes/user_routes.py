@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
-from app.constants.http_status_codes import SUCCESS_CODE, UNAUTHORIZED_CODE, BAD_REQUEST_CODE
+from app.constants.http_status_codes import SUCCESS_CODE,ALREADY_REPORTED_CODE
 from app.services.supabase_client_utils import get_logged_in_user_info, get_logged_in_user_id
-from app.services.database.bots_db import create_new_bot, get_user_bot
-from app.errors.http_error_templates import create_unauthorized_error, create_internal_error_template
+from app.services.database.bots_db import create_new_bot, get_user_bot, remove_user_bot
+from app.errors.http_error_templates import create_unauthorized_error, create_returnable_internal_error_template, create_returnable_error_template
 from app.constants.internal_errors import InternalErrorCode
 
 
@@ -39,6 +39,17 @@ def get_bot_info():
 
     bot_info = get_user_bot(userid)
     if not bot_info:
-        return jsonify(create_internal_error_template(InternalErrorCode.BotNotExist)), BAD_REQUEST_CODE
+        return create_returnable_internal_error_template(InternalErrorCode.BotNotExist)
     
     return jsonify(bot_info[0]), SUCCESS_CODE
+
+
+@users_bp.route('/bot/remove', methods=['GET','DELETE'])
+def remove_bot():
+    userid = get_logged_in_user_id()
+    if not userid:
+        return create_unauthorized_error()
+
+    remove_user_bot(userid)
+    return {}, SUCCESS_CODE
+    

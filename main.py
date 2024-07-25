@@ -4,7 +4,7 @@ load_dotenv()
 
 CONFIG = 'development'
 
-app = create_app(CONFIG)
+socket, app = create_app(CONFIG)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socket.run(app, debug=True)
