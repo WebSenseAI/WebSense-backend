@@ -197,6 +197,7 @@ yarg = "0.1.9"
 yarl = "1.9.4"
 zipp = "3.18.1"
 supabase = "^2.4.5"
+vecs = "^0.4.3"
 
 
 [build-system]
