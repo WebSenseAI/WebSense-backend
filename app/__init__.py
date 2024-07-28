@@ -2,7 +2,7 @@ import os
 from flask import Flask
 from app.config import config_by_name
 from app.routes import register_routes
-from app.extensions import init_extensions, socketio
+from app.extensions import init_extensions
 from app.errors import register_errors
 
 
@@ -20,6 +20,6 @@ def create_app(config_name:str=None):
 
     register_errors(app)
     
-    return socketio, app
+    return app
 
     

@@ -7,7 +7,7 @@ def create_new_bot(name, website_url, description, first_message, openai_key,own
                                               "description": description,
                                               "first_message": first_message,
                                               "openai_key": openai_key}).execute()
-    print(response)
+    return response.data
 
 
 def get_user_bot(userid):

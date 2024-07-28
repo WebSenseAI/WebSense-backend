@@ -28,7 +28,7 @@ def process_html(raw_html: str,
     target = soup
 
     title = soup.find('title')
-    if title is not None:
+    if title is not None and socketio is not None:
         socketio.emit('message', {'data': title.text})
 
     if focus_body:

@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
-from webscraping.sitemapExtractor import get_robots_results, fetch_all_sitemap_paths, mine_pages_form_sitemap
+from app.services.webscraping.sitemapExtractor import get_robots_results, fetch_all_sitemap_paths, mine_pages_form_sitemap
 
 
 class Crawler:

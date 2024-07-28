@@ -1,5 +1,5 @@
-from webscraping.domainCrawler import Crawler
-from webscraping.htmlReducer import process_html, fix_whitespaces
+from app.services.webscraping.domainCrawler import Crawler
+from app.services.webscraping.htmlReducer import process_html, fix_whitespaces
 import requests
 import os
 
@@ -20,7 +20,7 @@ def trainNewBot(url: str, save: bool = False, socketio = None):
         Indicates whether to save the extracted info to local files (Default: False)
     """
     # Add https:// to the url if it is not there.
-    url_fixed = ('' if url.startswith('http://') else 'https://') + url
+    url_fixed = ('' if url.startswith('https://') else 'https://') + url
     
     # Crawler object to get page URLs
     crawler = Crawler(url_fixed, expensive=True)
