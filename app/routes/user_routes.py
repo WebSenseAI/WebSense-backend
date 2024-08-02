@@ -10,19 +10,21 @@ from app.services.ai_tools.text import split_multiple_texts
 from app.services.webscraping.scrapWrapper import trainNewBot
 from app.extensions import socketio
 from app.models.vector_model import VectorModel
+from app.security import authorization_required
+
 # Blueprint for user routes
 
 users_bp = Blueprint('users_bp', __name__)
 
 @users_bp.route('/userinfo')
+@authorization_required
 def userinfo():
     userinfo = get_logged_in_user_info()
-    if userinfo:
-        return jsonify(userinfo.model_dump()), SUCCESS_CODE
-    else:
-        return create_unauthorized_error()
+    return jsonify(userinfo.model_dump()), SUCCESS_CODE
+    
     
 @users_bp.route('/bot/new', methods=['POST'])
+@authorization_required
 def create_bot():
     data = request.json
     response = create_new_bot(
@@ -48,11 +50,9 @@ def create_bot():
 
 
 @users_bp.route('/bot/info', methods=['GET'])
+@authorization_required
 def get_bot_info_by_user():
     userid = get_logged_in_user_id()
-    if not userid:
-        return create_unauthorized_error()
-
     bot_info = get_user_bot(userid)
     if not bot_info:
         return create_returnable_internal_error_template(InternalErrorCode.BotNotExist)
@@ -73,6 +73,7 @@ def update_bot():
     return jsonify(request.json), SUCCESS_CODE
 
 @users_bp.route('/bot/remove', methods=['DELETE'])
+@authorization_required
 def remove_bot():
     userid = get_logged_in_user_id()
     if not userid:
@@ -81,19 +82,3 @@ def remove_bot():
     remove_user_bot(userid)
     return {}, SUCCESS_CODE
     
-
-# import uuid
-
-# @users_bp.route('/bot/test')
-# def test_bot():
-#     # try:
-#     botid = str(uuid.uuid4())    
-#     pages = trainNewBot('https://luisbeqja.com',False, socketio)
-    
-#     splitted_text = split_multiple_texts(pages)
-
-#     embeddings = get_embedding(splitted_text)
-
-#     add_text_to_vector_db(embeddings, botid)
-#     # except Exception as e:
-#         # return jsonify(e.), 500
