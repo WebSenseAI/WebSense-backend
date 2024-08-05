@@ -2,7 +2,7 @@
 nixPkgs = ['python312', 'gcc', 'poetry']
 
 [phases.install]
-cmds = 'poetry install'
+cmd = 'poetry install'
 
 [phases.build]
 cmd = 'poetry build'
