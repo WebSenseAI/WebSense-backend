@@ -3,7 +3,7 @@ name = "websense-backend"
 version = "0.1.0"
 description = "Smart Web Helper AI"
 authors = ["Tan Dalkiran <tan.dalkiran@gmail.com>", "Luis Beqja <luisbeqjamw@gmail.com>"]
-readme = "README.md"
+readme = "app/README.md"
 packages = [
     { include = "app" }
 ]
