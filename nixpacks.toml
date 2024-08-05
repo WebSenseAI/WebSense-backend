@@ -1,8 +1,8 @@
 [phases.setup]
 nixPkgs = ['python312', 'gcc', 'poetry']
 
-[phases.install]
-cmd = 'python -m venv --copies /opt/venv && . /opt/venv/bin/activate && pip install -r requirements.txt'
+[build.nixpacksPlan.phases.install]
+cmds = ["poetry install"]
 
 [start]
-cmd = "poetry run flask --app main run"
+cmd = "gunicorn -w 4 'main:app' --preload"
