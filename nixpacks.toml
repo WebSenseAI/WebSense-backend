@@ -4,8 +4,5 @@ nixPkgs = ['python312', 'gcc', 'poetry']
 [phases.install]
 cmd = 'poetry install'
 
-[phases.build]
-cmd = 'poetry build'
-
 [start]
 cmd = "gunicorn -w 4 'main:app' --preload"
