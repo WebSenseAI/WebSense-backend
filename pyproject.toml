@@ -1,9 +1,13 @@
 [tool.poetry]
-name = "websense-backend-refactor"
+name = "websense-backend"
 version = "0.1.0"
 description = "Smart Web Helper AI"
-authors = ["Your Name <you@example.com>"]
+authors = ["Tan Dalkiran <tan.dalkiran@gmail.com>", "Luis Beqja <luisbeqjamw@gmail.com>"]
 readme = "README.md"
+packages = [
+    { include = "app" }
+]
+
 
 [tool.poetry.dependencies]
 python = "~3.12"
