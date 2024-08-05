@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ['python3120', 'gcc', 'poetry']
+nixPkgs = ['python312', 'gcc', 'poetry']
 
 [build.nixpacksPlan.phases.install]
 cmds = ["poetry env use 3.12.0", "poetry install"]
