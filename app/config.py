@@ -13,8 +13,8 @@ class Config:
     
 
 class DevelopmentConfig(Config):
-    CORS_RESOURCES = {r"/*": {"origins": "http://localhost:5173"}}
     BASE_URL = "http://localhost:5000"
+    CORS_RESOURCES = {r"/*": {"origins": "http://localhost:5173"}}
 
 class TestingConfig(Config):
     BASE_URL = "http://localhost:5000"

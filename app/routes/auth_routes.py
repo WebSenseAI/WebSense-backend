@@ -12,29 +12,55 @@ auth_bp = Blueprint('auth_bp', __name__)
 @auth_bp.route('/oauth/callback', methods=['GET'])
 def callback_post_google():
     code = request.args.get("code")
-    sb_session, user = exchange_with_session(code)
-    create_internal_user_with_supabase_code(user)
-    session['supabase_access_token'] = sb_session.access_token
-    session['supabase_refresh_token'] = sb_session.refresh_token
-    return redirect('https://websense-frontend.up.railway.app')
-
-
-@auth_bp.route('/register/oauth/<provider>', methods=['GET'])
-def continue_with_provider(provider: str):
-    available_providers = os.environ.get("SUPPORTED_PROVIDERS").split(',')
+    if not code:
+        return jsonify({'error': 'Authorization code missing'}), BAD_REQUEST_CODE
+    try:
+        sb_session, user = exchange_with_session(code)
+        create_internal_user_with_supabase_code(user)
+        session['supabase_access_token'] = sb_session.access_token
+        session['supabase_refresh_token'] = sb_session.refresh_token
+        return redirect('http://localhost:5173')
+    except Exception as e:
+        return jsonify({'error': str(e)}), BAD_REQUEST_CODE
+    
+    
+@auth_bp.route('/register/oauth/<provider>', methods=['POST'])
+def login_with_provider(provider: str):
+    available_providers = os.environ.get("SUPPORTED_PROVIDERS", "").split(',')
     if provider not in available_providers:
-        return create_returnable_internal_error_template(InternalErrorCode.InvalidProvider)
-
+        return jsonify({'error': 'Invalid provider'}), BAD_REQUEST_CODE
     base_url = current_app.config['BASE_URL']
     redirect_url = f"{base_url}/auth/oauth/callback"
 
-    oauth_url = get_oauth_provider_url(provider=provider,
-                                       redirect_url=redirect_url)
-
-    return redirect(oauth_url)
-
+    try:
+        oauth_url = get_oauth_provider_url(provider=provider, redirect_url=redirect_url)
+        return jsonify({'url': oauth_url}), SUCCESS_CODE
+    except Exception as e:
+        return jsonify({'error': str(e)}), BAD_REQUEST_CODE
 
 @auth_bp.route('/logout', methods=['GET'])
 def logout():
-    supabase_session_end()
-    return {}, SUCCESS_CODE
+    try:
+        supabase_session_end()
+        session.pop('supabase_access_token', None)
+        session.pop('supabase_refresh_token', None)
+        return {}, SUCCESS_CODE
+    except Exception as e:
+        return jsonify({'error': str(e)}), BAD_REQUEST_CODE
+
+
+@auth_bp.route('/status', methods=['GET'])
+def check_auth_status():
+    access_token = session.get('supabase_access_token')
+    if not access_token:
+        return jsonify({'authenticated': False}), SUCCESS_CODE
+    try:
+        is_valid = verify_token(access_token)
+        return jsonify({'authenticated': is_valid}), SUCCESS_CODE
+    except Exception as e:
+        return jsonify({'authenticated': False, 'error': str(e)}), SUCCESS_CODE
+    
+
+def verify_token(access_token):
+    user = supabase.auth.get_user(access_token)
+    return user is not None
