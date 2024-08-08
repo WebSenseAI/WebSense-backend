@@ -21,8 +21,8 @@ class TestingConfig(Config):
     CORS_RESOURCES = {r"/*": {"origins": "http://localhost:5173"}}
 
 class ProductionConfig(Config):
-    BASE_URL = "https://websenseai.netlify.app"
-    CORS_RESOURCES = {r"/*": {"origins": "https://websenseai.netlify.app"}}
+    BASE_URL = "https://websense-backend-production.up.railway.app/"
+    CORS_RESOURCES = {r"/*": {"origins": "https://websense-frontend.up.railway.app"}}
 
 config_by_name = {
     'development': DevelopmentConfig,
