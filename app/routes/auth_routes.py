@@ -9,7 +9,7 @@ import os
 
 auth_bp = Blueprint('auth_bp', __name__)
 
-@auth_bp.route('/oauth/callback', methods=['GET'])
+@auth_bp.route('/oauth/callback', methods=['GET','POST'])
 def callback_post_google():
     code = request.args.get("code")
     if not code:
