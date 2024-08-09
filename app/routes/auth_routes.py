@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request, redirect, current_app, session
+from flask_cors import cross_origin
 from app.constants.http_status_codes import SUCCESS_CODE, BAD_REQUEST_CODE
 from app.errors.http_error_templates import create_returnable_internal_error_template
 from app.services.supabase_client_utils import get_oauth_provider_url, exchange_with_session, supabase_session_end
@@ -10,6 +11,7 @@ import os
 auth_bp = Blueprint('auth_bp', __name__)
 
 @auth_bp.route('/oauth/callback', methods=['GET','POST'])
+@cross_origin()
 def callback_post_google():
     code = request.args.get("code")
     if not code:
@@ -25,6 +27,7 @@ def callback_post_google():
     
     
 @auth_bp.route('/register/oauth/<provider>', methods=['GET','POST'])
+@cross_origin()
 def login_with_provider(provider: str):
     available_providers = os.environ.get("SUPPORTED_PROVIDERS", "").split(',')
     if provider not in available_providers:
