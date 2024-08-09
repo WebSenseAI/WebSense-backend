@@ -24,7 +24,7 @@ def callback_post_google():
         return jsonify({'error': str(e)}), BAD_REQUEST_CODE
     
     
-@auth_bp.route('/register/oauth/<provider>', methods=['POST'])
+@auth_bp.route('/register/oauth/<provider>', methods=['GET','POST'])
 def login_with_provider(provider: str):
     available_providers = os.environ.get("SUPPORTED_PROVIDERS", "").split(',')
     if provider not in available_providers:
