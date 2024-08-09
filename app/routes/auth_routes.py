@@ -34,7 +34,8 @@ def login_with_provider(provider: str):
 
     try:
         oauth_url = get_oauth_provider_url(provider=provider, redirect_url=redirect_url)
-        return jsonify({'url': oauth_url}), SUCCESS_CODE
+        # return jsonify({'url': oauth_url}), SUCCESS_CODE
+        return redirect(oauth_url)
     except Exception as e:
         return jsonify({'error': str(e)}), BAD_REQUEST_CODE
 
