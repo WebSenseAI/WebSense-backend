@@ -16,7 +16,7 @@ def callback_post_google():
     create_internal_user_with_supabase_code(user)
     session['supabase_access_token'] = sb_session.access_token
     session['supabase_refresh_token'] = sb_session.refresh_token
-    return redirect('http://localhost:5173/setup')
+    return redirect('https://websense-frontend.up.railway.app')
 
 
 @auth_bp.route('/register/oauth/<provider>', methods=['GET'])

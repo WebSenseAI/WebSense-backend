@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ['python312', 'gcc', 'poetry']
+
+[build.nixpacksPlan.phases.install]
+cmds = ["poetry env use 3.12", "poetry install"]
+
+[start]
+cmd = "poetry run gunicorn -w 4 'main:app' --preload"
