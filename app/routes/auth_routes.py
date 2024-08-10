@@ -27,7 +27,7 @@ def callback_post_google():
         return jsonify({'error': str(e)}), BAD_REQUEST_CODE
     
     
-@auth_bp.route('/register/oauth/<provider>', methods=['GET','POST'])
+@auth_bp.route('/register/oauth/<provider>', methods=['GET'])
 @cross_origin()
 def login_with_provider(provider: str):
     available_providers = os.environ.get("SUPPORTED_PROVIDERS", "").split(',')
@@ -37,8 +37,8 @@ def login_with_provider(provider: str):
     redirect_url = f"{base_url}/auth/oauth/callback"
     try:
         oauth_url = get_oauth_provider_url(provider=provider, redirect_url=redirect_url)
-        #return jsonify({'url': oauth_url}), SUCCESS_CODE
-        return redirect(oauth_url)
+        return jsonify({'url': oauth_url}), SUCCESS_CODE
+        #return redirect(oauth_url)
     except Exception as e:
         return jsonify({'error': str(e)}), BAD_REQUEST_CODE
 
