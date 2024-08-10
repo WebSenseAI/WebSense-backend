@@ -1,13 +1,14 @@
 from flask import session
 from app.extensions import supabase
 
-def get_oauth_provider_url(provider:str, redirect_url:str):
+def get_oauth_provider_url(provider:str, redirect_url:str, code_challenge:str):
     session.permanent = True
     data = supabase.auth.sign_in_with_oauth({
         "provider": provider,
         "options": {
-            "redirect_to": redirect_url
-            
+            "redirect_to": redirect_url,
+            "code_challenge": code_challenge,
+            "code_challenge_method": "S256"            # Specify the challenge method (SHA256)
         }
     })
     return data.url
