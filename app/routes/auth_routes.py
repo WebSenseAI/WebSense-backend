@@ -10,25 +10,28 @@ import os
 
 auth_bp = Blueprint('auth_bp', __name__)
 
-@auth_bp.route('/oauth/callback', methods=['GET','POST'])
+@auth_bp.route('/oauth/callback<code>', methods=['GET','POST'])
 @cross_origin()
-def callback_post_google():
-    code = request.args.get("code")
+def callback_post_google(code:str):
     if not code:
         return jsonify({'error': 'Authorization code missing'}), BAD_REQUEST_CODE
+
+    code_verifier = session.get('code_verifier')
+    if not code_verifier:
+        return jsonify({'error': 'Code verifier missing'}), BAD_REQUEST_CODE
+
     try:
-        sb_session, user = exchange_with_session(code)
+        # Exchange the authorization code and code verifier for tokens
+        sb_session, user = exchange_with_session(code, code_verifier)
         if not sb_session or not sb_session.access_token:
             return jsonify({'error': 'Failed to retrieve access token'}), BAD_REQUEST_CODE
         
         create_internal_user_with_supabase_code(user)
         
-        # Save tokens in session
         access_token = sb_session.access_token
         session['supabase_access_token'] = access_token
         session['supabase_refresh_token'] = sb_session.refresh_token
         
-        # Redirect with access token
         return redirect(f'https://websense-frontend.up.railway.app/?access_token={access_token}')
     except Exception as e:
         return jsonify({'error': str(e)}), BAD_REQUEST_CODE
