@@ -52,6 +52,7 @@ def login_with_provider(provider: str):
         return jsonify({'error': str(e)}), BAD_REQUEST_CODE
 
 @auth_bp.route('/logout', methods=['GET'])
+
 def logout():
     try:
         supabase_session_end()

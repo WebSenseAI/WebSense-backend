@@ -1,3 +1,4 @@
+from flask import session
 from app.extensions import supabase
 
 def get_oauth_provider_url(provider:str, redirect_url:str):
@@ -11,7 +12,9 @@ def get_oauth_provider_url(provider:str, redirect_url:str):
     return data.url
 
 def exchange_with_session(code:str):
-    response = supabase.auth.exchange_code_for_session({"auth_code": code})
+    code_verifier = session.get('code_verifier')
+
+    response = supabase.auth.exchange_code_for_session({"auth_code": code, "code_verifier": code_verifier})
     return response.session,response.user
 
 def get_logged_in_user_info():
