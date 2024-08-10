@@ -1,5 +1,3 @@
-import base64
-import hashlib
 from flask import Blueprint, jsonify, request, redirect, current_app, session
 from flask_cors import cross_origin
 from app.constants.http_status_codes import SUCCESS_CODE, BAD_REQUEST_CODE
@@ -12,13 +10,6 @@ import os
 
 auth_bp = Blueprint('auth_bp', __name__)
 
-
-def generate_code_verifier():
-    return base64.urlsafe_b64encode(os.urandom(32)).rstrip(b'=').decode('ascii')
-
-def generate_code_challenge(code_verifier):
-    hashed = hashlib.sha256(code_verifier.encode()).digest()
-    return base64.urlsafe_b64encode(hashed).rstrip(b'=').decode('ascii')
 
 @auth_bp.route('/oauth/callback<code>', methods=['GET','POST'])
 @cross_origin()
@@ -53,24 +44,12 @@ def login_with_provider(provider: str):
     available_providers = os.environ.get("SUPPORTED_PROVIDERS", "").split(',')
     if provider not in available_providers:
         return jsonify({'error': 'Invalid provider'}), BAD_REQUEST_CODE
-    
-    # Generate code verifier and challenge
-    code_verifier = generate_code_verifier()
-    code_challenge = generate_code_challenge(code_verifier)
-    
-    # Store code verifier in session
-    session['code_verifier'] = code_verifier
-    
     base_url = current_app.config['BASE_URL']
     redirect_url = f"{base_url}/auth/oauth/callback"
-    
     try:
-        oauth_url = get_oauth_provider_url(
-            provider=provider, 
-            redirect_url=redirect_url,
-            code_challenge=code_challenge
-        )
-        return redirect(oauth_url)
+        oauth_url = get_oauth_provider_url(provider=provider, redirect_url=redirect_url)
+        return jsonify({'url': oauth_url}), SUCCESS_CODE
+        #return redirect(oauth_url)
     except Exception as e:
         return jsonify({'error': str(e)}), BAD_REQUEST_CODE
 
