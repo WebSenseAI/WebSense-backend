@@ -23,7 +23,7 @@ def callback_post_google():
         session['supabase_refresh_token'] = sb_session.refresh_token
         return redirect('https://websense-frontend.up.railway.app/')
     except Exception as e:
-        return jsonify({'error': str(e)}), BAD_REQUEST_CODE
+        return jsonify({'error in exept': str(e)}), BAD_REQUEST_CODE
     
     
 @auth_bp.route('/register/oauth/<provider>', methods=['GET','POST'])
