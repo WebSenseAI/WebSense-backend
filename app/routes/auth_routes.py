@@ -58,7 +58,7 @@ def login_with_provider(provider: str):
         session['code_verifier'] = verifier
         challenge = generate_code_challenge(verifier)
         
-        oauth_url = get_oauth_provider_url(provider=provider, redirect_url=redirect_url)
+        oauth_url = get_oauth_provider_url(provider=provider, redirect_url=redirect_url, code_challenge=challenge)
         return jsonify({'url': oauth_url}), SUCCESS_CODE
         #return redirect(oauth_url)
     except Exception as e:
