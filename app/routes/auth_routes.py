@@ -52,10 +52,10 @@ def login_with_provider(provider: str):
         return jsonify({'error': str(e)}), BAD_REQUEST_CODE
 
 @auth_bp.route('/logout', methods=['GET'])
-
 def logout():
     try:
         supabase_session_end()
+        session.pop('supabase_user', None)
         session.pop('supabase_access_token', None)
         session.pop('supabase_refresh_token', None)
         return {}, SUCCESS_CODE
