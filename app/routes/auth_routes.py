@@ -18,11 +18,18 @@ def callback_post_google():
         return jsonify({'error': 'Authorization code missing'}), BAD_REQUEST_CODE
     try:
         sb_session, user = exchange_with_session(code)
+        if not sb_session or not sb_session.access_token:
+            return jsonify({'error': 'Failed to retrieve access token'}), BAD_REQUEST_CODE
+        
         create_internal_user_with_supabase_code(user)
+        
+        # Save tokens in session
         access_token = sb_session.access_token
         session['supabase_access_token'] = access_token
         session['supabase_refresh_token'] = sb_session.refresh_token
-        return redirect('https://websense-frontend.up.railway.app/?access_token={access_token}'.format(access_token=access_token))
+        
+        # Redirect with access token
+        return redirect(f'https://websense-frontend.up.railway.app/?access_token={access_token}')
     except Exception as e:
         return jsonify({'error': str(e)}), BAD_REQUEST_CODE
     
