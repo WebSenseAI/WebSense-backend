@@ -19,11 +19,12 @@ def callback_post_google():
     try:
         sb_session, user = exchange_with_session(code)
         create_internal_user_with_supabase_code(user)
-        session['supabase_access_token'] = sb_session.access_token
+        access_token = sb_session.access_token
+        session['supabase_access_token'] = access_token
         session['supabase_refresh_token'] = sb_session.refresh_token
-        return redirect('https://websense-frontend.up.railway.app/')
+        return redirect('https://websense-frontend.up.railway.app/?access_token={access_token}'.format(access_token=access_token))
     except Exception as e:
-        return jsonify({'error in exept': str(e)}), BAD_REQUEST_CODE
+        return jsonify({'error': str(e)}), BAD_REQUEST_CODE
     
     
 @auth_bp.route('/register/oauth/<provider>', methods=['GET','POST'])
@@ -34,7 +35,6 @@ def login_with_provider(provider: str):
         return jsonify({'error': 'Invalid provider'}), BAD_REQUEST_CODE
     base_url = current_app.config['BASE_URL']
     redirect_url = f"{base_url}/auth/oauth/callback"
-
     try:
         oauth_url = get_oauth_provider_url(provider=provider, redirect_url=redirect_url)
         return jsonify({'url': oauth_url}), SUCCESS_CODE
@@ -53,9 +53,9 @@ def logout():
         return jsonify({'error': str(e)}), BAD_REQUEST_CODE
 
 
-@auth_bp.route('/status', methods=['GET'])
-def check_auth_status():
-    access_token = session.get('supabase_access_token')
+@auth_bp.route('/status/<supabase_access_token>', methods=['GET'])
+def check_auth_status(supabase_access_token: str):
+    access_token = supabase_access_token
     if not access_token:
         return jsonify({'authenticated': False}), InternalErrorCode.BotNotExist
     try:
