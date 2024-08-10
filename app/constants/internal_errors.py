@@ -6,6 +6,8 @@ class InternalErrorCode(Enum):
                        "Unsupported oauth provider selected.")
     BotNotExist = (1002, "No bot exist",
                    "Bot with given information does not exist")
+    AccessTokenMissing = (1003, "Access token missing",
+                          "Access token is missing in the request")
 
     def __init__(self, code: int, description: str, message: str):
         self._code = code

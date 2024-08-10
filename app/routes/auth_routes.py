@@ -57,7 +57,7 @@ def logout():
 def check_auth_status():
     access_token = session.get('supabase_access_token')
     if not access_token:
-        return jsonify({'authenticated': False}), SUCCESS_CODE
+        return jsonify({'authenticated': False}), InternalErrorCode.BotNotExist
     try:
         is_valid = verify_token(access_token)
         return jsonify({'authenticated': is_valid}), SUCCESS_CODE
