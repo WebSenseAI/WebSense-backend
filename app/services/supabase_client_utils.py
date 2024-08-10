@@ -2,6 +2,7 @@ from flask import session
 from app.extensions import supabase
 
 def get_oauth_provider_url(provider:str, redirect_url:str):
+    session.permanent = True
     data = supabase.auth.sign_in_with_oauth({
         "provider": provider,
         "options": {

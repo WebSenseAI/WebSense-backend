@@ -14,6 +14,7 @@ auth_bp = Blueprint('auth_bp', __name__)
 @auth_bp.route('/oauth/callback', methods=['GET','POST'])
 @cross_origin()
 def callback_post_google():
+    session.permanent = True
     code = request.args.get("code")
     
     if not code:
