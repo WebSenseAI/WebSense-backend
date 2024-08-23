@@ -9,6 +9,12 @@ import os
 
 auth_bp = Blueprint('auth_bp', __name__)
 
+
+####### DEPRECIATED #########
+# THE CODE IN THIS FILE IS FROM THE OLDER METHOD
+# IN THE NEW METHOD, THE AUTHORIZATION IS DONE IN THE FRONT END
+
+
 @auth_bp.route('/oauth/callback', methods=['GET'])
 def callback_post_google():
     code = request.args.get("code")
