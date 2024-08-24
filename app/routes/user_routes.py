@@ -27,7 +27,9 @@ def userinfo():
 @authorization_required
 def create_bot():
     data = request.json
+    access_token = request.authorization.token
     response = create_new_bot(
+        access_token=access_token,
         name = data['name'],
         website_url=data['website'],
         description=data['description'],
