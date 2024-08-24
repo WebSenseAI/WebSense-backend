@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from app.extensions import socketio
 load_dotenv()
 
-CONFIG = 'development'
+CONFIG = 'production'
 
 app = create_app(CONFIG)
 
