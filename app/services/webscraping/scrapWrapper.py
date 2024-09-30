@@ -3,8 +3,7 @@ from app.services.webscraping.htmlReducer import process_html, fix_whitespaces
 import requests
 import os
 
-
-def trainNewBot(url: str, save: bool = False, socketio = None):
+def trainNewBot(url: str, save: bool = True):
     """
     Wrapper method that is in charge of crawling into a website
     and storing all the meaningful information from its pages.
@@ -34,13 +33,15 @@ def trainNewBot(url: str, save: bool = False, socketio = None):
 
     # get reached sites
     sites = crawler.get_reached_sites()
-    
+    if len(sites) > 100: 
+        sites = sites[:100]
+        
     extracted_data = []
-
     # foreach reached url, get their raw HTML, process it and add to the list
+    print(len(sites))
     for site in sites:
         raw_html = requests.get(site)
-        processed = process_html(socketio=socketio, raw_html=raw_html.text)
+        processed = process_html(raw_html=raw_html.text)
         trimmed = fix_whitespaces(html=processed)
         extracted_data.append(trimmed)
 
@@ -65,7 +66,3 @@ def trainNewBot(url: str, save: bool = False, socketio = None):
                 print(f"No data to write for page {index}")
     
     return extracted_data
-        
-        
-
-        

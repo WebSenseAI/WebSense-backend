@@ -8,7 +8,7 @@ from app.services.ai_tools.vectors import add_text_to_vector_db
 from app.services.ai_tools.openai_utils import get_embedding
 from app.services.ai_tools.text import split_multiple_texts
 from app.services.webscraping.scrapWrapper import trainNewBot
-from app.extensions import socketio, supabase
+from app.extensions import supabase
 from app.models.vector_model import VectorModel
 from app.security import authorization_required
 
@@ -38,7 +38,7 @@ def create_bot():
     )
     botid = response[0]["id"]
 
-    pages = trainNewBot(data['website'], False, socketio)
+    pages = trainNewBot(data['website'], False)
     
     splitted_text = split_multiple_texts(pages)
 
@@ -47,7 +47,7 @@ def create_bot():
     vector_model = VectorModel(splitted_text,embeddings)
     
     add_text_to_vector_db(vector_model, botid)
-    
+    print('FINITO')
     return {}, SUCCESS_CODE
 
 

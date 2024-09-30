@@ -9,6 +9,7 @@ def create_new_bot(access_token, name, website_url, description, first_message, 
                                               "openai_key": openai_key})
     action.headers['Authorization'] = 'Bearer ' + access_token
     response = action.execute()
+    
     return response.data
 
 

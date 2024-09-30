@@ -1,11 +1,9 @@
 from bs4 import BeautifulSoup
 import re
-from flask_socketio import emit
 
 def process_html(raw_html: str,
                  remove_scripts_and_style: bool = True,
-                 focus_body: bool = True,
-                 socketio = None):
+                 focus_body: bool = True ):
     """
     Processes html, removes tags, preserves the textual content.
     Parameters
@@ -28,9 +26,6 @@ def process_html(raw_html: str,
     target = soup
 
     title = soup.find('title')
-    if title is not None and socketio is not None:
-        socketio.emit('message', {'data': title.text})
-
     if focus_body:
         body = soup.find('body')
         if body is not None:

@@ -128,7 +128,6 @@ def fetch_all_sitemap_paths(robots_results):
             all_paths += [path]
         else:
             continue
-
     return all_paths
 
 
