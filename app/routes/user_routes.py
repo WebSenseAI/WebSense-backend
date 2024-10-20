@@ -47,7 +47,7 @@ def create_bot():
     vector_model = VectorModel(splitted_text,embeddings)
     
     add_text_to_vector_db(vector_model, botid)
-    print('FINITO')
+    
     return {}, SUCCESS_CODE
 
 
