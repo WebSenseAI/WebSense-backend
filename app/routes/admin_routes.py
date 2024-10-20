@@ -17,3 +17,8 @@ def add_long_text():
 @admins_bp.route('/add/bot')
 def add_bot():
     return render_template('admin_templates/new_bot.html'), SUCCESS_CODE
+
+
+@admins_bp.route('/info')
+def get_info():
+    return jsonify({'ip': request.remote_addr})

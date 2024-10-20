@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.constants.http_status_codes import SUCCESS_CODE
 from app.services.supabase_client_utils import get_user_info
 from app.services.database.bots_db import create_new_bot, get_user_bot, get_bot_by_id, remove_user_bot
+from app.services.database.chat_db import get_questions_and_count
 from app.errors.http_error_templates import create_returnable_internal_error_template
 from app.constants.internal_errors import InternalErrorCode
 from app.services.ai_tools.vectors import add_text_to_vector_db
@@ -86,14 +87,15 @@ def remove_bot():
 
 
 
-@users_bp.route('/testing', methods=['GET'])
-@authorization_required
-def testing():
-    action = supabase.from_('tests').insert({'some_data': '1234Hello'})
-    action.headers['Authorization'] = 'Bearer ' + request.authorization.token
-    print(action.headers.get_list('authorization'))
-    # actionjson = action.headers.items()
-    # print(actionjson)
-    response = action.execute()
-    
-    return jsonify({}), SUCCESS_CODE
+@users_bp.route('/statistics/basic')
+def get_basic_statistics():
+    user = get_user_info(request.authorization.token)
+    userid = user.id
+    bot_info = get_user_bot(userid)[0]
+    botid = bot_info["id"]
+    chats, count = get_questions_and_count(bot_id=botid)
+    return jsonify({"data": chats, "count" : count}), SUCCESS_CODE
+
+@users_bp.route('/statistics/comprehensive')
+def get_comprehensive_statistics():
+    return
