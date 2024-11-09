@@ -1,10 +1,11 @@
 from app.extensions import supabase
 
-def insert_new_question(bot_id:str, question: str, response: str):
+def insert_new_question(bot_id:str, question: str, response: str, metadata: dict):
     action = supabase.from_('chat_repo').insert({
         "question" : question,
         "answer" :  response,
-        "bot_id" : bot_id
+        "bot_id" : bot_id,
+        "requester_metadata": metadata
     })
     response = action.execute()
     return response.data
