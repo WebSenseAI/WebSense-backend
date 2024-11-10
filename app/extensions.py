@@ -24,11 +24,10 @@ supabase: Client = create_supabase_client()
 
 vx = vecs.create_client(os.environ.get('SUPABASE_DB_STRING'))
 
-geoip_reader: Reader = None
+geoip_reader: Reader = load_geocountry_db()
 
 def init_extensions(app):
     cors.init_app(app, 
                   resources=app.config['CORS_RESOURCES'],
                   supports_credentials=app.config['CORS_SUPPORTS_CREDENTIALS'])
     api_doc(app, config_path='../swagger.yaml')
-    geoip_reader = load_geocountry_db()
