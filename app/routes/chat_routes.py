@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, jsonify, redirect
 from concurrent.futures import ThreadPoolExecutor
 from app.services.rag.chat import chat
 from app.services.database.chat_db import insert_new_question
+from app.services.database.geocountry_localdb import get_requester_country
 
 chat_bp = Blueprint('chat_bp', __name__)
 
@@ -15,8 +16,9 @@ def get_response():
     question = data.get('question')
     response = chat(botid, question)
 
+    ip_address = request.access_route[0]
     metadata = {
-        'ip_address': request.remote_addr,
+        'ip_address' : ip_address,
         'method': request.method,
         'url': request.url,
         'path': request.path,
@@ -25,7 +27,8 @@ def get_response():
         'accept_language': request.headers.get('Accept-Language'),
         'accept_encoding': request.headers.get('Accept-Encoding'),
         'referer': request.headers.get('Referer'),
-        'content_type': request.headers.get('Content-Type')
+        'content_type': request.headers.get('Content-Type'),
+        'country' : get_requester_country(ip_address)
     }
 
 

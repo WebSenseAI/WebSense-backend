@@ -4,7 +4,7 @@ from app.config import config_by_name
 from app.routes import register_routes
 from app.extensions import init_extensions
 from app.errors import register_errors
-
+from app.services.database.geocountry_localdb import download_geodatabase
 
 
 def create_app(config_name:str=None):
@@ -13,6 +13,8 @@ def create_app(config_name:str=None):
     config_class = config_by_name.get(config_name, 'development')
     app.config.from_object(config_class)
     app.secret_key = os.urandom(24)
+    
+    download_geodatabase()
     
     init_extensions(app)
 

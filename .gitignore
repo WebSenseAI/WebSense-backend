@@ -4,3 +4,4 @@ poetry.lock
 test.py
 data
 dist
+static-data
