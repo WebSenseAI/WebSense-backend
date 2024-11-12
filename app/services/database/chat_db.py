@@ -37,3 +37,8 @@ def get_time_periods(bot_id:str, access_token:str):
     response = action.execute()
     return response.data
     
+def get_last_week_top_words(bot_id:str, access_token:str):
+    action = supabase.schema('public').rpc('chat_get_last_week_words', {'botid' : bot_id})
+    action.headers['Authorization'] = 'Bearer ' + access_token
+    response = action.execute()
+    return response.data

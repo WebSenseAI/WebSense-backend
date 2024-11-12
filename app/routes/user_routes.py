@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.constants.http_status_codes import SUCCESS_CODE
 from app.services.supabase_client_utils import get_user_info
 from app.services.database.bots_db import create_new_bot, get_user_bot, get_bot_by_id, remove_user_bot
-from app.services.database.chat_db import get_questions_and_count, get_unique_users, get_countries, get_time_periods
+from app.services.database.chat_db import get_questions_and_count, get_unique_users, get_countries, get_time_periods, get_last_week_top_words
 from app.errors.http_error_templates import create_returnable_internal_error_template
 from app.constants.internal_errors import InternalErrorCode
 from app.services.ai_tools.vectors import add_text_to_vector_db
@@ -114,8 +114,11 @@ def get_comprehensive_statistics():
     countries, country_count = get_countries(bot_id=botid, access_token=access_token)
     time_periods = {}
     time_periods_raw = get_time_periods(bot_id=botid, access_token=access_token)
+
     for period in time_periods_raw:
         time_periods[period['time_of_day']] = period['count']
+
+    top_words = get_last_week_top_words(bot_id=botid, access_token=access_token)
 
     data = {
         "data": chats,
@@ -123,7 +126,8 @@ def get_comprehensive_statistics():
         "user_count": users_count,
         "countries" : countries,
         "country_count" : country_count,
-        "time_periods" : time_periods
+        "time_periods" : time_periods,
+        "top_words" : top_words
     }
 
     return jsonify(data), SUCCESS_CODE
