@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.constants.http_status_codes import SUCCESS_CODE
 from app.services.supabase_client_utils import get_user_info
 from app.services.database.bots_db import create_new_bot, get_user_bot, get_bot_by_id, remove_user_bot
-from app.services.database.chat_db import get_questions_and_count, get_unique_users, get_countries
+from app.services.database.chat_db import get_questions_and_count, get_unique_users, get_countries, get_time_periods
 from app.errors.http_error_templates import create_returnable_internal_error_template
 from app.constants.internal_errors import InternalErrorCode
 from app.services.ai_tools.vectors import add_text_to_vector_db
@@ -101,6 +101,7 @@ def get_basic_statistics():
     return jsonify(data), SUCCESS_CODE
 
 @users_bp.route('/statistics/comprehensive')
+@authorization_required
 def get_comprehensive_statistics():
     access_token = request.authorization.token
     user = get_user_info(access_token=access_token)
@@ -111,13 +112,18 @@ def get_comprehensive_statistics():
     chats, chat_count = get_questions_and_count(bot_id=botid, access_token=access_token)
     users, users_count = get_unique_users(bot_id=botid, access_token=access_token) 
     countries, country_count = get_countries(bot_id=botid, access_token=access_token)
+    time_periods = {}
+    time_periods_raw = get_time_periods(bot_id=botid, access_token=access_token)
+    for period in time_periods_raw:
+        time_periods[period['time_of_day']] = period['count']
 
     data = {
         "data": chats,
         "chat_count": chat_count,
         "user_count": users_count,
         "countries" : countries,
-        "country_count" : country_count
+        "country_count" : country_count,
+        "time_periods" : time_periods
     }
 
     return jsonify(data), SUCCESS_CODE

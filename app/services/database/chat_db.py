@@ -30,3 +30,10 @@ def get_countries(bot_id:str, access_token:str):
     action.headers['Authorization'] = 'Bearer ' + access_token
     response = action.execute()
     return response.data, len(response.data)
+
+def get_time_periods(bot_id:str, access_token:str):
+    action = supabase.schema('public').rpc('chat_get_time_of_day', {'botid' : bot_id})
+    action.headers['Authorization'] = 'Bearer ' + access_token
+    response = action.execute()
+    return response.data
+    
