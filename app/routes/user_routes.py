@@ -138,10 +138,10 @@ def get_comprehensive_statistics():
     data = {
         "message_count": data_raw["message_count"],
         "user_count": data_raw["user_count"],
-        "countries" : data_raw["country_stats"],
-        "country_count" : len(data_raw["country_stats"]),
+        "countries" : data_raw["country_stats"] if data_raw["country_stats"] else [],
+        "country_count" : len(data_raw["country_stats"]) if data_raw["country_stats"] else 0,
         "time_periods" : time_periods,
-        "top_words" : data_raw["top_words_weekly"]
+        "top_words" : data_raw["top_words_weekly"] if data_raw["top_words_weekly"] else []
     }
 
     return jsonify(data), SUCCESS_CODE
