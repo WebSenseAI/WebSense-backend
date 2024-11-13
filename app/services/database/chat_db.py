@@ -12,6 +12,20 @@ def insert_new_question(bot_id:str, question: str, response: str, metadata: dict
 
 
 
+## CONSOLIDATED (AGGREGATED) FUNCTIONS
+def get_basic_stats(bot_id:str, access_token:str):
+    action = supabase.schema('public').rpc('get_basic_stats', {'botid': bot_id})
+    action.headers['Authorization'] = 'Bearer ' + access_token
+    response = action.execute()
+    return response.data
+
+def get_comprehensive_stats(bot_id:str, access_token:str):
+    action = supabase.schema('public').rpc('get_comprehensive_stats', {'botid': bot_id})
+    action.headers['Authorization'] = 'Bearer ' + access_token
+    response = action.execute()
+    return response.data
+
+## DISTINCT FUNCTIONS (DO NOT USE TWO OF THEM IN A SINGLE API CALL)
 def get_questions_and_count(bot_id:str, access_token:str):
     action = supabase.schema('public').rpc('chat_get_conversations_by_bot', {'botid': bot_id})
     action.headers['Authorization'] = 'Bearer ' + access_token
@@ -23,7 +37,6 @@ def get_unique_users(bot_id:str, access_token:str):
     action.headers['Authorization'] = 'Bearer ' + access_token
     response = action.execute()
     return response.data, len(response.data)
-
 
 def get_countries(bot_id:str, access_token:str):
     action = supabase.schema('public').rpc('chat_get_country_stats', {'botid': bot_id})

@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.constants.http_status_codes import SUCCESS_CODE
 from app.services.supabase_client_utils import get_user_info
 from app.services.database.bots_db import create_new_bot, get_user_bot, get_bot_by_id, remove_user_bot
-from app.services.database.chat_db import get_questions_and_count, get_unique_users, get_countries, get_time_periods, get_last_week_top_words
+from app.services.database.chat_db import get_questions_and_count, get_unique_users, get_countries, get_time_periods, get_last_week_top_words, get_basic_stats, get_comprehensive_stats
 from app.errors.http_error_templates import create_returnable_internal_error_template
 from app.constants.internal_errors import InternalErrorCode
 from app.services.ai_tools.vectors import add_text_to_vector_db
@@ -85,6 +85,28 @@ def remove_bot():
     return {}, SUCCESS_CODE
     
 
+@users_bp.route('/stats/basic')
+@authorization_required
+def get_basic_stat():
+    access_token = request.authorization.token
+    user = get_user_info(access_token=access_token)
+    userid = user.id
+    bot_info = get_user_bot(userid)[0]
+    botid = bot_info["id"]
+    data = get_basic_stats(botid,access_token)
+    return jsonify(data)
+
+@users_bp.route('/stats/comp')
+@authorization_required
+def get_comp_stat():
+    access_token = request.authorization.token
+    user = get_user_info(access_token=access_token)
+    userid = user.id
+    bot_info = get_user_bot(userid)[0]
+    botid = bot_info["id"]
+    data = get_comprehensive_stats(botid,access_token)
+    return jsonify(data)
+
 
 
 @users_bp.route('/statistics/basic')
@@ -95,9 +117,7 @@ def get_basic_statistics():
     userid = user.id
     bot_info = get_user_bot(userid)[0]
     botid = bot_info["id"]
-    chats, chat_count = get_questions_and_count(bot_id=botid, access_token=access_token)
-    users, users_count = get_unique_users(bot_id=botid, access_token=access_token) 
-    data = {"data": chats, "chat_count" : chat_count, "user_count": users_count}
+    data = get_basic_stats(bot_id=botid,access_token=access_token)
     return jsonify(data), SUCCESS_CODE
 
 @users_bp.route('/statistics/comprehensive')
@@ -108,26 +128,20 @@ def get_comprehensive_statistics():
     userid = user.id
     bot_info = get_user_bot(userid)[0]
     botid = bot_info["id"]
+    data_raw = get_comprehensive_stats(bot_id=botid, access_token=access_token)
     
-    chats, chat_count = get_questions_and_count(bot_id=botid, access_token=access_token)
-    users, users_count = get_unique_users(bot_id=botid, access_token=access_token) 
-    countries, country_count = get_countries(bot_id=botid, access_token=access_token)
     time_periods = {}
-    time_periods_raw = get_time_periods(bot_id=botid, access_token=access_token)
-
+    time_periods_raw = data_raw["time_of_day_counter"]
     for period in time_periods_raw:
         time_periods[period['time_of_day']] = period['count']
 
-    top_words = get_last_week_top_words(bot_id=botid, access_token=access_token)
-
     data = {
-        "data": chats,
-        "chat_count": chat_count,
-        "user_count": users_count,
-        "countries" : countries,
-        "country_count" : country_count,
+        "message_count": data_raw["message_count"],
+        "user_count": data_raw["user_count"],
+        "countries" : data_raw["country_stats"],
+        "country_count" : len(data_raw["country_stats"]),
         "time_periods" : time_periods,
-        "top_words" : top_words
+        "top_words" : data_raw["top_words_weekly"]
     }
 
     return jsonify(data), SUCCESS_CODE
