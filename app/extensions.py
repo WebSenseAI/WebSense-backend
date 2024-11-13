@@ -57,11 +57,18 @@ def load_db_certificate():
     if os.environ.get("FLASK_ENV", 'production') == 'production':
         cert_base64 = os.environ.get("SUPABASE_SSL_CERT_BASE64")
         if not os.path.exists('./certificates'):
+            logger.info('certificates directory does not exist')
             os.mkdir('./certificates')
+            logger.info('created certificates directory')
         cert_path = r'./certificates/prod-ca-2021.crt'
         with open(cert_path, 'wb') as cert_file:
             cert_file.write(base64.b64decode(cert_base64))
-    
+            logger.info('Successfully created prod-ca-2021')
+        logger.info('Verifying certificate')
+        if os.path.isfile(cert_path):
+            logger.info('Certificate is succesfully located')
+        else:
+            logger.warning('Certificate not found')   
 
 cors: CORS = CORS()
 
