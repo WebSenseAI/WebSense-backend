@@ -6,6 +6,7 @@ import geoip2.database
 from geoip2.database import Reader
 import os
 import vecs
+import base64
 import requests
 import tarfile
 from app.services.logging_manager import get_logger
@@ -52,10 +53,21 @@ def load_geocountry_db():
     path = os.path.join(os.environ.get('GEOIP_DB_PATH'), 'GeoLite2-Country.mmdb') 
     return geoip2.database.Reader(path)
 
+def load_db_certificate():
+    if os.environ.get("FLASK_ENV", 'production') == 'production':
+        cert_base64 = os.environ.get("SUPABASE_SSL_CERT_BASE64")
+        if not os.path.exists('./certificates'):
+            os.mkdir('./certificates')
+        cert_path = r'./certificates/prod-ca-2021.crt'
+        with open(cert_path, 'wb') as cert_file:
+            cert_file.write(base64.b64decode(cert_base64))
+    
+
 cors: CORS = CORS()
 
 supabase: Client = create_supabase_client()
 
+load_db_certificate()
 vx = vecs.create_client(os.environ.get('SUPABASE_DB_STRING'))
 
 geoip_reader: Reader = load_geocountry_db()
