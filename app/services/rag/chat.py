@@ -1,10 +1,12 @@
-
+from app.services.logging_manager import get_logger
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_openai import ChatOpenAI
 from langchain_core.documents import Document
 from app.services.rag.retriever import retriever
+
+logger = get_logger(__name__)
 
 def chat(id:str, question:str):
     
@@ -58,5 +60,5 @@ def chat(id:str, question:str):
         messages.append(AIMessage(content=response))
         return response 
     except Exception as e:
-        print('Error invoking document chain:', e)
+        logger.error('Error invoking document chain:', e)
         return None

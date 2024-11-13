@@ -1,7 +1,10 @@
 from app.services.webscraping.domainCrawler import Crawler
 from app.services.webscraping.htmlReducer import process_html, fix_whitespaces
+from app.services.logging_manager import get_logger
 import requests
 import os
+
+logger = get_logger(__name__)
 
 def trainNewBot(url: str, save: bool = True):
     """
@@ -38,7 +41,7 @@ def trainNewBot(url: str, save: bool = True):
         
     extracted_data = []
     # foreach reached url, get their raw HTML, process it and add to the list
-    print(len(sites))
+    logger.info("Total sites reached:", len(sites))
     for site in sites:
         raw_html = requests.get(site)
         processed = process_html(raw_html=raw_html.text)
@@ -63,6 +66,6 @@ def trainNewBot(url: str, save: bool = True):
                 with open(os.path.join(storage_path,f_name), 'w', encoding="utf-8") as f:
                     f.write(page)
             else:
-                print(f"No data to write for page {index}")
+                logger.warning(f"No data to write for page {index}")
     
     return extracted_data

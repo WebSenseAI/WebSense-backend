@@ -15,7 +15,6 @@ def authorization_required(f):
         if not access_token or 'undefined' in access_token:
             return create_unauthorized_error()
 
-        # print(supabase.auth._headers)
         return f(*args, **kwargs)
     return decorated
 

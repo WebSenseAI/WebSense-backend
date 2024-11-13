@@ -2,7 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 from app.services.webscraping.sitemapExtractor import get_robots_results, fetch_all_sitemap_paths, mine_pages_form_sitemap
-
+from app.services.logging_manager import get_logger
+logger=  get_logger(__name__)
 
 class Crawler:
     """
@@ -86,7 +87,7 @@ class Crawler:
                             queue.append(full_url)
 
                 except requests.exceptions.RequestException as e:
-                    print(f"Request failed crawling to {url}:\n {e}")
+                    logger.warning(f"Request failed crawling to {url}:\n {e}")
             n += 1
 
         self.sites_reached += list(visited)
@@ -112,4 +113,4 @@ class Crawler:
         with open(path + ".txt", 'w') as f:
             f.write("\n".join(self.sites_reached))
 
-        print("SAVED SUCCESFULLY")
+        logger.info("SAVED SUCCESFULLY")

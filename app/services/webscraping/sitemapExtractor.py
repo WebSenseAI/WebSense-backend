@@ -3,7 +3,9 @@ from urllib.parse import urljoin, urlparse
 from urllib.robotparser import RobotFileParser
 import xmltodict
 import xml
+from app.services.logging_manager import get_logger
 
+logger = get_logger(__name__)
 
 def expand_sitemap_index(index_path):
     """
@@ -28,10 +30,10 @@ def expand_sitemap_index(index_path):
     expansion = []
     for sitemap in sm_values:
         if get_sitemap_type(sitemap) == 'INDEX':
-            print(f'expanding {sitemap}')
+            logger.info(f'expanding {sitemap}')
             expansion += expand_sitemap_index(sitemap)
         else:
-            print(f'added {sitemap}')
+            logger.info(f'added {sitemap}')
             expansion += [sitemap]
     return expansion
 
@@ -55,7 +57,7 @@ def get_and_turn_xml_to_dict(path):
         sitemap_dict = xmltodict.parse(sitemap_xml)
         return sitemap_dict
     except xml.parsers.expat.ExpatError:
-        print(f"ERROR OCCURED TRYING TO PARSE {path}")
+        logger.error(f"ERROR OCCURED TRYING TO PARSE {path}")
         return None
 
 
@@ -121,7 +123,6 @@ def fetch_all_sitemap_paths(robots_results):
     all_paths = []
     for path in robots_results:
         path_type = get_sitemap_type(path)
-        print(path, path_type)
         if path_type == 'INDEX':
             all_paths += expand_sitemap_index(path)
         elif path_type == 'SITEMAP':

@@ -1,5 +1,8 @@
 from bs4 import BeautifulSoup
 import re
+from app.services.logging_manager import get_logger
+
+logger = get_logger(__name__)
 
 def process_html(raw_html: str,
                  remove_scripts_and_style: bool = True,
@@ -31,7 +34,7 @@ def process_html(raw_html: str,
         if body is not None:
             target = body
         else:
-            print('No <body> tag found. Processing the whole HTML')
+            logger.warning('No <body> tag found. Processing the whole HTML')
             return None
 
     return target.text
@@ -47,7 +50,7 @@ def fix_whitespaces(html):
         The text that will be fixed
     """
     if html is None:
-        print("No HTML to process")
+        logger.warning("No HTML to process")
         return None
     # Convert all new lines into spaces
     cleaned = html.replace('\n', ' ')

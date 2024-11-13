@@ -8,6 +8,9 @@ import os
 import vecs
 import requests
 import tarfile
+from app.services.logging_manager import get_logger
+
+logger = get_logger(__name__)
 
 def create_supabase_client():
     url = os.environ.get('SUPABASE_URL')
@@ -30,7 +33,7 @@ def download_geodatabase():
             with open(tar_path, 'wb') as f:
                 for chunk in response.iter_content(1024):
                     f.write(chunk)
-            print('Database tar download is successfull')
+            logger.info('Database tar download is successfull')
             
             with tarfile.open(tar_path, 'r:gz') as tar:
                 for member in tar.getmembers():
@@ -38,11 +41,11 @@ def download_geodatabase():
                         member.name = os.path.basename(member.name)
                         tar.extract(member, base_path)
                         break
-            print('Tar extraction succesfull')
+            logger.info('Tar extraction succesfull')
             os.remove(tar_path)
-            print('Database setup successfull')
+            logger.info('Database setup successfull')
         else:
-            print('Failed to download geolite2 country database')
+            logger.error('Failed to download geolite2 country database')
 
 def load_geocountry_db():
     download_geodatabase()

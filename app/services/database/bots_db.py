@@ -23,5 +23,4 @@ def get_bot_by_id(botid):
 
 def remove_user_bot(userid):
     response = supabase.table('bots').delete().eq('owned_by', userid).execute()
-    print(response)
     return response.count
