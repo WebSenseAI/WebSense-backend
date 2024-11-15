@@ -22,7 +22,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     BASE_URL = "https://back.websense-ai.com"
-    CORS_RESOURCES = {r"/*": {"origins": "app.websense-ai.com"}}
+    CORS_RESOURCES = {r"/*": {"origins": "https://app.websense-ai.com"}}
 
 config_by_name = {
     'development': DevelopmentConfig,
