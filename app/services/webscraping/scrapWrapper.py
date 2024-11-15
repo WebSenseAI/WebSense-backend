@@ -41,7 +41,7 @@ def trainNewBot(url: str, save: bool = True):
         
     extracted_data = []
     # foreach reached url, get their raw HTML, process it and add to the list
-    logger.info("Total sites reached:", len(sites))
+    logger.info(f"Total sites reached:{len(sites)}")
     for site in sites:
         raw_html = requests.get(site)
         processed = process_html(raw_html=raw_html.text)

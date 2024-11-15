@@ -1,15 +1,15 @@
 from flask import Blueprint, request, jsonify
 from app.constants.http_status_codes import SUCCESS_CODE
 from app.services.supabase_client_utils import get_user_info
-from app.services.database.bots_db import create_new_bot, get_user_bot, get_bot_by_id, remove_user_bot
-from app.services.database.chat_db import get_questions_and_count, get_unique_users, get_countries, get_time_periods, get_last_week_top_words, get_basic_stats, get_comprehensive_stats
+from app.services.database.bots_db import create_new_bot, get_user_bot, get_bot_by_id, remove_user_bot, mark_bot_as_complete
+from app.services.database.chat_db import get_basic_stats, get_comprehensive_stats
 from app.errors.http_error_templates import create_returnable_internal_error_template
 from app.constants.internal_errors import InternalErrorCode
 from app.services.ai_tools.vectors import add_text_to_vector_db
 from app.services.ai_tools.openai_utils import get_embedding
 from app.services.ai_tools.text import split_multiple_texts
 from app.services.webscraping.scrapWrapper import trainNewBot
-from app.extensions import supabase
+from app.extensions import vx
 from app.models.vector_model import VectorModel
 from app.security import authorization_required
 
@@ -49,6 +49,8 @@ def create_bot():
     
     add_text_to_vector_db(vector_model, botid)
     
+    mark_bot_as_complete(access_token=access_token, bot_id=botid)
+
     return {}, SUCCESS_CODE
 
 
@@ -81,7 +83,10 @@ def update_bot():
 @authorization_required
 def remove_bot():
     userid = get_user_info(request.authorization.token).id
-    remove_user_bot(userid)
+    data = remove_user_bot(userid)
+    botid = data[0]["id"]
+    vx.delete_collection(botid)
+    # TODO: maybe remove the bot_related questions from chat_repo
     return {}, SUCCESS_CODE
     
 
