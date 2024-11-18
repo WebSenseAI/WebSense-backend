@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response
 from app.constants.http_status_codes import SUCCESS_CODE
 from app.services.supabase_client_utils import get_user_info
 from app.services.database.bots_db import create_new_bot, get_user_bot, get_bot_by_id, remove_user_bot, mark_bot_as_complete
@@ -12,10 +12,16 @@ from app.services.webscraping.scrapWrapper import trainNewBot
 from app.extensions import vx
 from app.models.vector_model import VectorModel
 from app.security import authorization_required
+from concurrent.futures import ThreadPoolExecutor
+from app.services.logging_manager import get_logger
+
+
 
 # Blueprint for user routes
-
 users_bp = Blueprint('users_bp', __name__)
+
+executor = ThreadPoolExecutor()
+logger = get_logger(__name__)
 
 @users_bp.route('/userinfo')
 @authorization_required
@@ -38,19 +44,30 @@ def create_bot():
         openai_key=data['key']
     )
     botid = response[0]["id"]
+    
+    def train_bot_and_create_collection(_botid,_website,_access_token):
+        logger.info(f'bot training started for {_botid}')
+        yield f"data: 'bot training started for {_botid}'\n\n"
 
-    pages = trainNewBot(data['website'], False)
-    
-    splitted_text = split_multiple_texts(pages)
+        pages = trainNewBot(_website, False)
+        logger.info(f'Extracted {len(pages)} pages.')
 
-    embeddings = get_embedding(splitted_text)
-    
-    vector_model = VectorModel(splitted_text,embeddings)
-    
-    add_text_to_vector_db(vector_model, botid)
-    
-    mark_bot_as_complete(access_token=access_token, bot_id=botid)
+        splitted_text = split_multiple_texts(pages)
 
+        embeddings = get_embedding(splitted_text)
+        logger.info(f'Embeddings created')
+        
+
+        vector_model = VectorModel(splitted_text,embeddings)
+        
+        logger.info('adding to vector_db')
+        add_text_to_vector_db(vector_model, _botid)
+
+        logger.info('Bot ready...')
+        mark_bot_as_complete(access_token=_access_token, bot_id=_botid)
+    
+    executor.submit(train_bot_and_create_collection,
+                    botid, data['website'], access_token)
     return {}, SUCCESS_CODE
 
 

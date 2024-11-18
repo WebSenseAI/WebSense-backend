@@ -204,6 +204,7 @@ flask-socketio = "^5.3.6"
 pydantic-core = "^2.20.1"
 pydantic = "^2.8.2"
 geoip2 = "^4.8.0"
+flask-sse = "^1.0.0"
 
 
 [build-system]
