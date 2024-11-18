@@ -47,7 +47,6 @@ def create_bot():
     
     def train_bot_and_create_collection(_botid,_website,_access_token):
         logger.info(f'bot training started for {_botid}')
-        yield f"data: 'bot training started for {_botid}'\n\n"
 
         pages = trainNewBot(_website, False)
         logger.info(f'Extracted {len(pages)} pages.')
