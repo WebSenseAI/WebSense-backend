@@ -5,7 +5,6 @@ from supabase.client import Client, ClientOptions
 import geoip2.database
 from geoip2.database import Reader
 import os
-import vecs
 import base64
 import requests
 import tarfile
@@ -75,7 +74,6 @@ cors: CORS = CORS()
 supabase: Client = create_supabase_client()
 
 load_db_certificate()
-vx = vecs.create_client(os.environ.get('SUPABASE_DB_STRING'))
 
 geoip_reader: Reader = load_geocountry_db()
 

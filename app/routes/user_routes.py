@@ -9,7 +9,6 @@ from app.services.ai_tools.vectors import add_text_to_vector_db
 from app.services.ai_tools.openai_utils import get_embedding
 from app.services.ai_tools.text import split_multiple_texts
 from app.services.webscraping.scrapWrapper import trainNewBot
-from app.extensions import vx
 from app.models.vector_model import VectorModel
 from app.security import authorization_required
 from concurrent.futures import ThreadPoolExecutor
@@ -61,7 +60,7 @@ def create_bot():
             vector_model = VectorModel(splitted_text,embeddings)
             
             logger.info('adding to vector_db')
-            add_text_to_vector_db(vector_model, _botid)
+            add_text_to_vector_db(vector_model, _botid,access_token=access_token)
 
             logger.info('Bot ready...')
             mark_bot_as_complete(access_token=_access_token, bot_id=_botid)
@@ -104,7 +103,7 @@ def remove_bot():
     userid = get_user_info(request.authorization.token).id
     data = remove_user_bot(userid)
     botid = data[0]["id"]
-    vx.delete_collection(botid)
+    # vx.delete_collection(botid)#TODO: fix this
     # TODO: maybe remove the bot_related questions from chat_repo
     return {}, SUCCESS_CODE
     

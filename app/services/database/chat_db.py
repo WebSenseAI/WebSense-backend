@@ -1,7 +1,7 @@
 from app.extensions import supabase
 
 def insert_new_question(bot_id:str, question: str, response: str, metadata: dict):
-    action = supabase.from_('chat_repo').insert({
+    action = supabase.schema('public').from_('chat_repo').insert({
         "question" : question,
         "answer" :  response,
         "bot_id" : bot_id,
