@@ -84,4 +84,3 @@ def init_extensions(app):
                   resources=app.config['CORS_RESOURCES'],
                   supports_credentials=app.config['CORS_SUPPORTS_CREDENTIALS'])
     api_doc(app, config_path='../swagger.yaml')
-

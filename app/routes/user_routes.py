@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, Response
-from app.constants.http_status_codes import SUCCESS_CODE
+from app.constants.http_status_codes import SUCCESS_CODE, NO_CONTENT_CODE
 from app.services.supabase_client_utils import get_user_info
 from app.services.database.bots_db import create_new_bot, get_user_bot, get_bot_by_id, remove_user_bot, mark_bot_as_complete
 from app.services.database.chat_db import get_basic_stats, get_comprehensive_stats
@@ -80,7 +80,7 @@ def get_bot_info_by_user():
     userid = user.id
     bot_info = get_user_bot(userid)
     if not bot_info:
-        return create_returnable_internal_error_template(InternalErrorCode.BotNotExist)
+        return jsonify(False), NO_CONTENT_CODE
     
     return jsonify(bot_info[0]), SUCCESS_CODE
 
