@@ -1,4 +1,4 @@
-
+from app.services.logging_manager import get_logger
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain.chains.combine_documents import create_stuff_documents_chain
@@ -6,20 +6,20 @@ from langchain_openai import ChatOpenAI
 from langchain_core.documents import Document
 from app.services.rag.retriever import retriever
 
+logger = get_logger(__name__)
+
 def chat(id:str, question:str):
     
     # System message template for the virtual assistant
     SYSTEM_TEMPLATE = """
-        You are a virtual assistant appearing as a popup on the bottom right of the website, ready to assist users. 
-        To improve readability, break your responses into multiple messages by inserting "/n/" where appropriate, up to 3 times per response, but not always.
-        Ask for more information when necessary.
-        Occasionally remind the user that you are here to help, but avoid overusing this phrase.
-        Do not mention the context explicitly; instead, act as if you have complete knowledge of the website.
-        
-        <context>
-        {context}
+        You are a virtual assistant appearing as a popup on the bottom right of the website, ready to assist users in finding relevant information on this site. If a question is outside the website's content, respond politely that you can only assist with website-related inquiries. 
+        To improve readability, break your responses into multiple messages by inserting "/n/" where appropriate, up to 3 times per response, but not always. Ask for more information when necessary. 
+        Keep responses polite and user-friendly, gently guiding users back to the site's purpose when questions go off-topic. Avoid mentioning "context" directly; act as if you have full knowledge of the website. 
+
+        <context> 
+        {context} 
         </context>
-    """
+        """
     
     llm = ChatOpenAI(model="gpt-4o", temperature=0.6)
     
@@ -58,5 +58,5 @@ def chat(id:str, question:str):
         messages.append(AIMessage(content=response))
         return response 
     except Exception as e:
-        print('Error invoking document chain:', e)
+        logger.error('Error invoking document chain:', e)
         return None

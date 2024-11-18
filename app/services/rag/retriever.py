@@ -1,5 +1,8 @@
 import openai
 from app.extensions import vx
+from app.services.logging_manager import get_logger
+
+logger = get_logger(__name__)
 
 DIMENSIONS = {
     'text-embedding-ada-002' : 1536,
@@ -28,6 +31,6 @@ def retriever(collection_id: str, qustion: str, model: str = 'text-embedding-ada
         )
         return results[0][1]['content']
     except Exception as e:
-        print('Error',e)
+        logger.error('Error',e)
         return 'Error'
     

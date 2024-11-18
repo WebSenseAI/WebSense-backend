@@ -1,11 +1,12 @@
 from bs4 import BeautifulSoup
 import re
-from flask_socketio import emit
+from app.services.logging_manager import get_logger
+
+logger = get_logger(__name__)
 
 def process_html(raw_html: str,
                  remove_scripts_and_style: bool = True,
-                 focus_body: bool = True,
-                 socketio = None):
+                 focus_body: bool = True ):
     """
     Processes html, removes tags, preserves the textual content.
     Parameters
@@ -28,15 +29,12 @@ def process_html(raw_html: str,
     target = soup
 
     title = soup.find('title')
-    if title is not None and socketio is not None:
-        socketio.emit('message', {'data': title.text})
-
     if focus_body:
         body = soup.find('body')
         if body is not None:
             target = body
         else:
-            print('No <body> tag found. Processing the whole HTML')
+            logger.warning('No <body> tag found. Processing the whole HTML')
             return None
 
     return target.text
@@ -52,7 +50,7 @@ def fix_whitespaces(html):
         The text that will be fixed
     """
     if html is None:
-        print("No HTML to process")
+        logger.warning("No HTML to process")
         return None
     # Convert all new lines into spaces
     cleaned = html.replace('\n', ' ')
