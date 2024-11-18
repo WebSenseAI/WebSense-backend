@@ -46,25 +46,28 @@ def create_bot():
     botid = response[0]["id"]
     
     def train_bot_and_create_collection(_botid,_website,_access_token):
-        logger.info(f'bot training started for {_botid}')
+        try:
+            logger.info(f'bot training started for {_botid}')
 
-        pages = trainNewBot(_website, False)
-        logger.info(f'Extracted {len(pages)} pages.')
+            pages = trainNewBot(_website, False)
+            logger.info(f'Extracted {len(pages)} pages.')
 
-        splitted_text = split_multiple_texts(pages)
+            splitted_text = split_multiple_texts(pages)
 
-        embeddings = get_embedding(splitted_text)
-        logger.info(f'Embeddings created')
-        
+            embeddings = get_embedding(splitted_text)
+            logger.info(f'Embeddings created')
+            
 
-        vector_model = VectorModel(splitted_text,embeddings)
-        
-        logger.info('adding to vector_db')
-        add_text_to_vector_db(vector_model, _botid)
+            vector_model = VectorModel(splitted_text,embeddings)
+            
+            logger.info('adding to vector_db')
+            add_text_to_vector_db(vector_model, _botid)
 
-        logger.info('Bot ready...')
-        mark_bot_as_complete(access_token=_access_token, bot_id=_botid)
-    
+            logger.info('Bot ready...')
+            mark_bot_as_complete(access_token=_access_token, bot_id=_botid)
+        except Exception as e:
+            logger.error("error occured")
+            logger.exception(e)
     executor.submit(train_bot_and_create_collection,
                     botid, data['website'], access_token)
     return {}, SUCCESS_CODE
