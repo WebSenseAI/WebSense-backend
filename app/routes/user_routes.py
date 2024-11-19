@@ -80,7 +80,7 @@ def get_bot_info_by_user():
     userid = user.id
     bot_info = get_user_bot(userid)
     if not bot_info:
-        return jsonify(False), NO_CONTENT_CODE
+        return create_returnable_internal_error_template(InternalErrorCode.BotNotExist, NO_CONTENT_CODE)
     
     return jsonify(bot_info[0]), SUCCESS_CODE
 
