@@ -75,9 +75,10 @@ def create_bot():
 @users_bp.route('/bot/info', methods=['GET'])
 @authorization_required
 def get_bot_info_by_user():
-    user = get_user_info(request.authorization.token)
+    access_token = request.authorization.token
+    user = get_user_info(access_token=access_token)
     userid = user.id
-    bot_info = get_user_bot(userid)
+    bot_info = get_user_bot(userid, access_token=access_token)
     if not bot_info:
         return create_returnable_internal_error_template(InternalErrorCode.BotNotExist)
     
@@ -100,36 +101,12 @@ def update_bot():
 @users_bp.route('/bot/remove', methods=['DELETE'])
 @authorization_required
 def remove_bot():
-    userid = get_user_info(request.authorization.token).id
-    data = remove_user_bot(userid)
-    botid = data[0]["id"]
-    # vx.delete_collection(botid)#TODO: fix this
+    access_token = request.authorization.token
+    userid = get_user_info(access_token=access_token).id
+    data1, data2 = remove_user_bot(userid, access_token=access_token)
     # TODO: maybe remove the bot_related questions from chat_repo
     return {}, SUCCESS_CODE
     
-
-@users_bp.route('/stats/basic')
-@authorization_required
-def get_basic_stat():
-    access_token = request.authorization.token
-    user = get_user_info(access_token=access_token)
-    userid = user.id
-    bot_info = get_user_bot(userid)[0]
-    botid = bot_info["id"]
-    data = get_basic_stats(botid,access_token)
-    return jsonify(data)
-
-@users_bp.route('/stats/comp')
-@authorization_required
-def get_comp_stat():
-    access_token = request.authorization.token
-    user = get_user_info(access_token=access_token)
-    userid = user.id
-    bot_info = get_user_bot(userid)[0]
-    botid = bot_info["id"]
-    data = get_comprehensive_stats(botid,access_token)
-    return jsonify(data)
-
 
 
 @users_bp.route('/statistics/basic')
@@ -138,7 +115,7 @@ def get_basic_statistics():
     access_token = request.authorization.token
     user = get_user_info(access_token=access_token)
     userid = user.id
-    bot_info = get_user_bot(userid)[0]
+    bot_info = get_user_bot(userid, access_token=access_token)[0]
     botid = bot_info["id"]
     data = get_basic_stats(bot_id=botid,access_token=access_token)
     return jsonify(data), SUCCESS_CODE
@@ -149,7 +126,7 @@ def get_comprehensive_statistics():
     access_token = request.authorization.token
     user = get_user_info(access_token=access_token)
     userid = user.id
-    bot_info = get_user_bot(userid)[0]
+    bot_info = get_user_bot(userid, access_token=access_token)[0]
     botid = bot_info["id"]
     data_raw = get_comprehensive_stats(bot_id=botid, access_token=access_token)
     
